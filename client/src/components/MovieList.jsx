@@ -14,7 +14,6 @@ function MovieList() {
 		if (reason === "clickaway") {
 			return;
 		}
-
 		setOpen(false);
 	};
 

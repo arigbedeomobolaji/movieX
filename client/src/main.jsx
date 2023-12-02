@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 import React from "react";
 import ReactDOM from "react-dom/client";
+
 import { ApolloClient, ApolloProvider } from "@apollo/client";
 import App from "./App.jsx";
 import { cache } from "./graphql/cache.js";
