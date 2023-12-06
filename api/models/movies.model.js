@@ -48,7 +48,6 @@ Movie.init(
 			allowNull: false,
 			validate: {
 				isUrl(value) {
-					console.log(validator.isURL(value));
 					if (
 						!validator.isURL(value, {
 							require_host: true,

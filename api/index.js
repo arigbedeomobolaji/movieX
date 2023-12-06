@@ -9,16 +9,28 @@ import { InMemoryLRUCache } from "@apollo/utils.keyvaluecache";
 import { typeDefs } from "./schema.js";
 import resolvers from "./resolvers.js";
 import "./utils/mysql.js";
-import movieRouter from "./routes/movies.route.js";
+// import movieRouter from "./routes/movies.route.js";
 import { MovieAPI } from "./datasource/MovieDatasource.js";
+import { UserAPI } from "./datasource/UserDatasource.js";
+import { authenticateUser } from "./middlewares/authenticateUser.js";
 dotenv.config();
 
 const schema = makeExecutableSchema({ typeDefs, resolvers });
 
 const server = new ApolloServer({
 	schema,
+	context: async ({ req }) => {
+		// Extract the token from the Authorization header
+		const authorizationStr = req.headers.authorization || "";
+		const token = authorizationStr.split(" ")[1];
+
+		// Authenticate the user and add the user object to the context
+		const user = token ? await authenticateUser(token) : null;
+		return typeof user === "object" ? { user } : null;
+	},
 	dataSources: () => ({
 		movieAPI: new MovieAPI(),
+		userAPI: new UserAPI(),
 	}),
 	cache: new InMemoryLRUCache({
 		//~100MiB
@@ -40,14 +52,16 @@ server.applyMiddleware({ app });
 app.get("/", async (req, res) => {
 	try {
 		console.log("here");
-		res.status(200).json({ message: "Working" });
+		res.status(200).json({
+			message: "go to /graphql to interact with our API.",
+		});
 	} catch (error) {
 		console.log(error);
 		res.status(500).send({ error });
 	}
 });
 
-app.use("/api/movies", movieRouter);
+// app.use("/api/movies", movieRouter);
 
 // morgan
 morgan(function (tokens, req, res) {

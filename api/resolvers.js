@@ -1,6 +1,14 @@
 // Resolver functions are responsible for performing the actions defined in the Schema e.g fetching and updating movies
+import {
+	createUser,
+	getUser,
+	updateUser,
+	loginUser,
+	getAllUser,
+	deleteUser,
+} from "./resolvers/users.resolver.js";
 
-function errorResponse(error) {
+export function errorResponse(error) {
 	return {
 		code: error.extensions.response.status,
 		success: false,
@@ -11,6 +19,8 @@ function errorResponse(error) {
 
 const resolvers = {
 	Query: {
+		getUser,
+		getAllUser,
 		movie: async (_, { id }, { dataSources }) => {
 			try {
 				const movie = await dataSources.movieAPI.getMovie(id);
@@ -65,7 +75,10 @@ const resolvers = {
 				return errorResponse(error);
 			}
 		},
-
+		createUser,
+		updateUser,
+		loginUser,
+		deleteUser,
 		async updateMovie(_, { id, updateData }, { dataSources }) {
 			try {
 				console.log({ id, updateData, message: "Now" });

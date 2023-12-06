@@ -17,6 +17,7 @@ export class MovieAPI extends DataSource {
 			},
 		};
 	}
+
 	async getMovies() {
 		const movies = await Movie.findAll();
 		return movies;

@@ -12,6 +12,7 @@ import { useMutation } from "@apollo/client";
 import { GET_MOVIES } from "../graphql/queries";
 import { useState } from "react";
 import BasicModal from "./Modal";
+import { Link } from "react-router-dom";
 
 export default function MovieCard({
 	id,
@@ -105,9 +106,13 @@ export default function MovieCard({
 								</div>
 							)}
 						</div>
+						<Link to={`/movies/${id}`}>
+							<Button>See More</Button>
+						</Link>
 					</div>
 				</CardContent>
 			</CardActionArea>
+
 			<BasicModal
 				{...movieData}
 				action="Update Movie"
