@@ -3,6 +3,8 @@ import Root from "./routes/root";
 import ErrorPage from "./components/error-page";
 import Movies from "./routes/layout/movies";
 import Movie from "./routes/movie";
+import Auth from "./routes/auth";
+import ProtectedRoute from "./routes/protected";
 
 const router = createBrowserRouter([
 	{
@@ -15,15 +17,19 @@ const router = createBrowserRouter([
 				element: <Movies />,
 			},
 			{
-				path: "/movies/:movieId",
-				element: <Movie />,
+				path: "/auth",
+				element: <Auth />,
 			},
 		],
 	},
 	{
-		path: "/movies/:movieId",
-		element: <div>Movies</div>,
-		errorElement: <ErrorPage />,
+		element: <ProtectedRoute />,
+		children: [
+			{
+				path: "/movies/:movieId",
+				element: <Movie />,
+			},
+		],
 	},
 ]);
 export default function App() {

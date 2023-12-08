@@ -55,8 +55,7 @@ export class MovieAPI extends DataSource {
 	}
 
 	async deleteMovie(movieId) {
-		const id = Number(movieId);
-		const movie = await Movie.findByPk(id);
+		const movie = await Movie.findByPk(movieId);
 		if (!movie) this.errorFormat("Movie not in Database", 404);
 		return await movie.destroy();
 	}

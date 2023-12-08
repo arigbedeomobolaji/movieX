@@ -4,12 +4,13 @@ import { errorFormat } from "../utils/errorFormat.js";
 
 export async function createUser(_, { data }, { dataSources }) {
 	try {
-		const newUser = await dataSources.userAPI.createUser(data);
+		const { user, token } = await dataSources.userAPI.createUser(data);
 		return {
 			code: 201,
 			success: true,
 			message: "User successfully created.",
-			user: newUser,
+			user,
+			token,
 		};
 	} catch (error) {
 		return errorResponse(error);
@@ -60,12 +61,16 @@ export async function updateUser(_, { id, updateData }, { dataSources, user }) {
 
 export async function loginUser(_, { email, password }, { dataSources }) {
 	try {
-		const user = await dataSources.userAPI.loginUser(email, password);
+		const { user, token } = await dataSources.userAPI.loginUser(
+			email,
+			password
+		);
 		return {
 			code: 201,
 			success: true,
 			message: "User successfully created.",
 			user,
+			token,
 		};
 	} catch (error) {
 		return errorResponse(error);

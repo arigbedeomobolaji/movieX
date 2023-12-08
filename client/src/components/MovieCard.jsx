@@ -12,7 +12,7 @@ import { useMutation } from "@apollo/client";
 import { GET_MOVIES } from "../graphql/queries";
 import { useState } from "react";
 import BasicModal from "./Modal";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export default function MovieCard({
 	id,
@@ -21,6 +21,7 @@ export default function MovieCard({
 	posterUrl,
 	rating,
 }) {
+	const navigate = useNavigate();
 	const [deleteMovie] = useMutation(DELETE_MOVIE, {
 		variables: { deleteMovieId: Number(id) },
 		optimisticResponse: {
@@ -49,8 +50,9 @@ export default function MovieCard({
 	const [performAction, setPerformAction] = useState(false);
 
 	return (
-		<Card sx={{ maxWidth: 360 }} className="pt-4 mb-0">
-			<CardActionArea className="mb-0 h-full">
+		// <Link to={`/movies/${id}`} className="no-underline">
+		<Card sx={{ maxWidth: 360 }} className="pt-4 mb-0 flex flex-col">
+			<CardActionArea className="mb-0 relative h-[275px]">
 				<div className="w-full h-[350px] blur-sm opacity-90">
 					<img
 						src={posterUrl}
@@ -63,24 +65,28 @@ export default function MovieCard({
 					image={posterUrl}
 					alt={title + id}
 				/>
+			</CardActionArea>
 
-				<CardContent className="md:h-[275px] relative">
-					<div className="flex flex-col justify-between h-full">
-						<div>
-							<Typography
-								gutterBottom
-								variant="h6"
-								component="div"
-								className="text-emerald-700 text-[17px] font-poppings font-bold"
-							>
-								{title}
-							</Typography>
-							<Typography variant="body2" color="text.secondary">
-								{description}
-							</Typography>
-						</div>
+			<CardContent className="mt-16">
+				<div className="flex flex-col justify-between  relative py-4 h-[250px]">
+					<div className="flex-grow  h-2/3">
+						<Typography
+							gutterBottom
+							variant="h6"
+							component="div"
+							className="text-emerald-700 text-[17px] font-poppings font-bold"
+						>
+							{title}
+						</Typography>
+						<Typography variant="body2" color="text.secondary">
+							{description.length >= 250
+								? description.substring(1, 250) + "..."
+								: description}
+						</Typography>
+					</div>
 
-						<div className="pt-3 flex items-center justify-between px-3">
+					<div className="h-1/3  mt-4 flex flex-col justify-end">
+						<div className="flex items-center justify-between px-3">
 							<Rating name="read-only" value={rating} readOnly />
 
 							<MoreVertIcon
@@ -106,12 +112,15 @@ export default function MovieCard({
 								</div>
 							)}
 						</div>
-						<Link to={`/movies/${id}`}>
-							<Button>See More</Button>
-						</Link>
+						<Button
+							className="text-green-700 justify-start"
+							onClick={() => navigate(`/movies/${id}`)}
+						>
+							See More
+						</Button>
 					</div>
-				</CardContent>
-			</CardActionArea>
+				</div>
+			</CardContent>
 
 			<BasicModal
 				{...movieData}
@@ -122,5 +131,6 @@ export default function MovieCard({
 				handleClose={handleClose}
 			/>
 		</Card>
+		// </Link>
 	);
 }

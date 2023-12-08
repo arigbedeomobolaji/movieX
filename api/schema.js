@@ -4,9 +4,9 @@ export const typeDefs = gql`
 	# Special Object type that defines all of the top-level entry points for queries that clients execute against your server.
 	type Query {
 		"Get a specific movie from our DB"
-		movie(id: ID!): MovieResponse
+		getMovie(id: Int!): MovieResponse
 		"Get the lists of all movies in our db"
-		movies: MoviesResponse
+		getMovies: MoviesResponse
 		"create bulk movies and save them in the db"
 		seedMovies(moviesData: [MovieInput!]!): MoviesResponse
 		"Get a specific user by Id"
@@ -24,11 +24,11 @@ export const typeDefs = gql`
 		"Update a movie in our database"
 		updateMovie(id: Int, updateData: MovieUpdateInput): MovieResponse
 		"Create a new User"
-		createUser(data: UserInput): UserResponse
+		createUser(data: UserInput): UserTokenResponse
 		"Update the user Data"
 		updateUser(id: Int!, updateData: UserUpdateInput): UserResponse
 		"Login a new user"
-		loginUser(email: String!, password: String!): UserResponse
+		loginUser(email: String!, password: String!): UserTokenResponse
 		"Delete a user by id"
 		deleteUser(id: Int!): UserResponse
 	}
@@ -45,6 +45,13 @@ export const typeDefs = gql`
 		success: Boolean!
 		message: String!
 		user: User
+	}
+	type UserTokenResponse {
+		code: Int!
+		success: Boolean!
+		message: String!
+		user: User
+		token: String
 	}
 
 	type MoviesResponse {
@@ -91,7 +98,7 @@ export const typeDefs = gql`
 
 	# The dat we want the movie object to return to our users.
 	type Movie {
-		id: ID!
+		id: Int!
 		title: String!
 		description: String!
 		posterUrl: String!
@@ -106,7 +113,6 @@ export const typeDefs = gql`
 		username: String!
 		email: String!
 		isAdmin: Boolean
-		tokens: [Token]
 	}
 
 	type Token {

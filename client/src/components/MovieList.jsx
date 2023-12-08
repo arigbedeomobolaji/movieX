@@ -18,13 +18,13 @@ function MovieList() {
 	};
 
 	useEffect(() => {
-		if (data) {
-			moviesVar(data?.movies?.movies);
+		if (data?.movies?.movies) {
+			moviesVar(data.movies.movies);
 			localStorage.setItem("moviesData", JSON.stringify(moviesData));
 		}
 
 		return () => {};
-	}, [data]);
+	}, [data, moviesData]);
 
 	if (loading) {
 		return (
@@ -62,7 +62,7 @@ function MovieList() {
 	}
 	return (
 		<div className="flex flex-col pb-5">
-			{moviesData.length ? (
+			{moviesData?.length ? (
 				<div className="max-w-7xl mx-3 my-5 lg:mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-items-start md:justify-items-center">
 					{moviesData.map((movie) => (
 						<MovieCard {...movie} key={movie.id} />

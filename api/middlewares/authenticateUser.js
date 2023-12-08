@@ -1,7 +1,7 @@
-import { AuthenticationError, ForbiddenError } from "apollo-server-express";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import User from "../models/users.model.js";
+import { errorFormat } from "../utils/errorFormat.js";
 dotenv.config();
 
 const jwtSecret = process.env.TOKEN_SECRET;
@@ -9,15 +9,9 @@ const jwtSecret = process.env.TOKEN_SECRET;
 // Middleware function to authenticate the user using JWT
 export const authenticateUser = async (token) => {
 	try {
-		if (!token) {
-			throw new AuthenticationError(
-				"Authentication failed. Token not provided."
-			);
-		}
-
 		const decodedToken = await jwt.verify(token, jwtSecret);
 		if (!decodedToken) {
-			throw new ForbiddenError("Access Denied. User not authorized.");
+			throw errorFormat("Access Denied. User not authorized.");
 		}
 		return decodedToken;
 	} catch (error) {
@@ -34,6 +28,6 @@ export const authenticateUser = async (token) => {
 				return undefined;
 			}
 		}
-		throw new AuthenticationError("Authentication failed. Invalid token.");
+		throw errorFormat("Authentication failed.", 401);
 	}
 };

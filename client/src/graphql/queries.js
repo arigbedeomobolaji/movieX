@@ -2,7 +2,7 @@ import { gql } from "@apollo/client";
 
 export const GET_MOVIES = gql`
 	query Movies {
-		movies {
+		getMovies {
 			code
 			success
 			message
@@ -35,8 +35,8 @@ export const GET_CACHED_MOVIES = gql`
 `;
 
 export const GET_MOVIE = gql`
-	query Movie($movieId: ID!) {
-		movie(id: $movieId) {
+	query Movie($movieId: Int!) {
+		getMovie(id: $movieId) {
 			code
 			success
 			message

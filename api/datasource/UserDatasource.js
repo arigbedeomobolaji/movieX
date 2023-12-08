@@ -19,29 +19,38 @@ export class UserAPI extends DataSource {
 	}
 
 	async createUser(userData) {
-		const user = new User(userData);
-		const savedUser = await user.save();
+		const newUserData = new User(userData);
+		const savedUser = await newUserData.save();
 		if (savedUser) {
-			const token = await user.generateAuthToken();
-			user.tokens = user.tokens
-				? [{ token }, ...user.tokens]
+			const token = await savedUser.generateAuthToken();
+			savedUser.tokens = savedUser.tokens
+				? [{ token }, ...savedUser.tokens]
 				: [{ token }];
-			return await user.save();
+			const user = await savedUser.save();
+			if (user) {
+				return { user, token };
+			}
 		}
 		throw { error: "Unable to save user" };
 	}
 
 	async loginUser(email, password) {
 		try {
-			const user = await User.authenticateUser(email, password);
-			if (!user.id) {
+			const foundUser = await User.authenticateUser(email, password);
+			if (!foundUser.id) {
 				throw new AuthenticationError("Unauthorized");
 			}
-			const token = await user.generateAuthToken();
-			user.tokens = user.tokens
-				? [{ token }, ...user.tokens]
+			const token = await foundUser.generateAuthToken();
+			foundUser.tokens = foundUser.tokens
+				? [{ token }, ...foundUser.tokens]
 				: [{ token }];
-			return await user.save();
+			const user = await foundUser.save();
+			if (user) {
+				return {
+					user,
+					token,
+				};
+			}
 		} catch (error) {
 			return this.errorFormat(error.message, 401);
 		}

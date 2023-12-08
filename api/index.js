@@ -23,11 +23,11 @@ const server = new ApolloServer({
 		// Extract the token from the Authorization header
 		const authorizationStr = req.headers.authorization || "";
 		const token = authorizationStr.split(" ")[1];
-
 		// Authenticate the user and add the user object to the context
 		const user = token ? await authenticateUser(token) : null;
 		return typeof user === "object" ? { user } : null;
 	},
+
 	dataSources: () => ({
 		movieAPI: new MovieAPI(),
 		userAPI: new UserAPI(),
