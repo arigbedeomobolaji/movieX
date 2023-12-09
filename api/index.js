@@ -9,10 +9,11 @@ import { InMemoryLRUCache } from "@apollo/utils.keyvaluecache";
 import { typeDefs } from "./schema.js";
 import resolvers from "./resolvers.js";
 import "./utils/mysql.js";
-// import movieRouter from "./routes/movies.route.js";
 import { MovieAPI } from "./datasource/MovieDatasource.js";
 import { UserAPI } from "./datasource/UserDatasource.js";
 import { authenticateUser } from "./middlewares/authenticateUser.js";
+import { ReviewAPI } from "./datasource/ReviewDatasource.js";
+import { sequelize } from "./utils/mysql.js";
 dotenv.config();
 
 const schema = makeExecutableSchema({ typeDefs, resolvers });
@@ -31,6 +32,7 @@ const server = new ApolloServer({
 	dataSources: () => ({
 		movieAPI: new MovieAPI(),
 		userAPI: new UserAPI(),
+		reviewAPI: new ReviewAPI(),
 	}),
 	cache: new InMemoryLRUCache({
 		//~100MiB
@@ -60,9 +62,6 @@ app.get("/", async (req, res) => {
 		res.status(500).send({ error });
 	}
 });
-
-// app.use("/api/movies", movieRouter);
-
 // morgan
 morgan(function (tokens, req, res) {
 	return [

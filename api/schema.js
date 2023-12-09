@@ -31,6 +31,8 @@ export const typeDefs = gql`
 		loginUser(email: String!, password: String!): UserTokenResponse
 		"Delete a user by id"
 		deleteUser(id: Int!): UserResponse
+		"Create a new review for a movie"
+		createReview(data: ReviewInput): ReviewResponse
 	}
 
 	type MovieResponse {
@@ -45,6 +47,12 @@ export const typeDefs = gql`
 		success: Boolean!
 		message: String!
 		user: User
+	}
+	type ReviewResponse {
+		code: Int!
+		success: Boolean!
+		message: String!
+		review: Review
 	}
 	type UserTokenResponse {
 		code: Int!
@@ -82,6 +90,12 @@ export const typeDefs = gql`
 		isAdmin: Boolean
 	}
 
+	input ReviewInput {
+		review: String!
+		userId: Int!
+		movieId: Int!
+	}
+
 	input UserUpdateInput {
 		username: String
 		email: String
@@ -103,8 +117,9 @@ export const typeDefs = gql`
 		description: String!
 		posterUrl: String!
 		rating: Int!
+		movieReviews: [Review]
 	}
-
+	# give us means to type json object
 	scalar JSON
 
 	# The User Type
@@ -113,9 +128,15 @@ export const typeDefs = gql`
 		username: String!
 		email: String!
 		isAdmin: Boolean
+		userReviews: [Review]
 	}
 
 	type Token {
 		token: JSON
+	}
+
+	type Review {
+		id: Int!
+		review: String!
 	}
 `;

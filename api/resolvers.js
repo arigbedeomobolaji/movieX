@@ -15,12 +15,17 @@ import {
 	updateMovie,
 	deleteMovie,
 } from "./resolvers/movies.resolver.js";
+import {
+	createReview,
+	getMovieReviews,
+	getMyReviews,
+} from "./resolvers/reviews.resolver.js";
 
 export function errorResponse(error) {
 	return {
-		code: error.extensions.response.status,
+		code: error?.extensions?.response?.status || 500,
 		success: false,
-		message: error.extensions.response.body,
+		message: error?.extensions?.response?.body || error.message,
 		movie: null,
 	};
 }
@@ -42,6 +47,13 @@ const resolvers = {
 		deleteUser,
 		updateMovie,
 		deleteMovie,
+		createReview,
+	},
+	User: {
+		userReviews: getMyReviews,
+	},
+	Movie: {
+		movieReviews: getMovieReviews,
 	},
 };
 

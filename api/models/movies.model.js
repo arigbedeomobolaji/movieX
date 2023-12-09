@@ -1,22 +1,15 @@
 import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../utils/mysql.js";
 import validator from "validator";
+import User from "./users.model.js";
+import Review from "./reviews.model.js";
 
 // to delete protect route before sending to client
-const PROTECTED_ATTRIBUTES = ["password", "token"];
+// const PROTECTED_ATTRIBUTES = ["password", "token"];
 
 class Movie extends Model {
 	getMovieTitle() {
 		return [this.title];
-	}
-
-	toJSON() {
-		// hide protected fields
-		let attributes = Object.assign({}, this.get());
-		for (let a of PROTECTED_ATTRIBUTES) {
-			delete attributes[a];
-		}
-		return attributes;
 	}
 }
 

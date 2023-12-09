@@ -1,5 +1,7 @@
 /* eslint-disable no-throw-literal */
-import Movie from "../models/movies.model.js";
+import { Movie } from "../models/index.js";
+import { Review } from "../models/index.js";
+import { errorFormat } from "../utils/errorFormat.js";
 import { validOperation } from "../utils/validOperation.js";
 import { DataSource } from "apollo-datasource";
 
@@ -8,14 +10,6 @@ export class MovieAPI extends DataSource {
 		super();
 		// initialize any configurations or setup here
 		this.baseUrl = "";
-	}
-
-	errorFormat(body, status) {
-		throw {
-			extensions: {
-				response: { body, status },
-			},
-		};
 	}
 
 	async getMovies() {
@@ -45,8 +39,7 @@ export class MovieAPI extends DataSource {
 		const id = Number(movieId);
 		let movie = await Movie.findByPk(id);
 		if (!movie) {
-			// error.extensions.response.status,
-			this.errorFormat("Movie not in Database", 404);
+			throw errorFormat("Movie not in Database", 404);
 		}
 		updates.forEach((field) => {
 			movie[field] = updateData[field];

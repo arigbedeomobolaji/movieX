@@ -1,21 +1,14 @@
 /* eslint-disable no-throw-literal */
-import User from "../models/users.model.js";
+import { Review, User } from "../models/index.js";
 import { DataSource } from "apollo-datasource";
 import { validOperation } from "../utils/validOperation.js";
 import { AuthenticationError } from "apollo-server-express";
+import { errorFormat } from "../utils/errorFormat.js";
 
 export class UserAPI extends DataSource {
 	constructor() {
 		super();
 		this.baseUrl = "";
-	}
-
-	errorFormat(body, status) {
-		throw {
-			extensions: {
-				response: { body, status },
-			},
-		};
 	}
 
 	async createUser(userData) {
@@ -31,7 +24,7 @@ export class UserAPI extends DataSource {
 				return { user, token };
 			}
 		}
-		throw { error: "Unable to save user" };
+		throw errorFormat("Unable to save user", 50);
 	}
 
 	async loginUser(email, password) {
@@ -52,10 +45,20 @@ export class UserAPI extends DataSource {
 				};
 			}
 		} catch (error) {
-			return this.errorFormat(error.message, 401);
+			return errorFormat(error.message, 401);
 		}
 	}
 
+	/* 
+	Old way in rest api
+	async getUser(id) {
+		return await User.findByPk(id, , {
+			include: [{ model: Review, as: "userReviews" }],
+		});
+	} 
+	*/
+
+	// GraphlQL association
 	async getUser(id) {
 		return await User.findByPk(id);
 	}
@@ -70,7 +73,7 @@ export class UserAPI extends DataSource {
 		const id = Number(userId);
 		let user = await User.findByPk(id);
 		if (!user) {
-			this.errorFormat("Movie not in Database", 404);
+			errorFormat("Movie not in Database", 404);
 		}
 		updates.forEach((field) => {
 			if (field === "password") {
