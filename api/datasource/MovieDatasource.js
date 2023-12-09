@@ -1,6 +1,5 @@
 /* eslint-disable no-throw-literal */
 import { Movie } from "../models/index.js";
-import { Review } from "../models/index.js";
 import { errorFormat } from "../utils/errorFormat.js";
 import { validOperation } from "../utils/validOperation.js";
 import { DataSource } from "apollo-datasource";

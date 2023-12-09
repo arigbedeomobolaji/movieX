@@ -12,6 +12,7 @@
 	"author": "",
 	"license": "ISC",
 	"dependencies": {
+		"@apollo/datasource-rest": "^6.2.2",
 		"@apollo/server": "^4.9.5",
 		"@apollo/subgraph": "^2.5.7",
 		"@apollo/utils.keyvadapter": "^3.1.0",
@@ -20,6 +21,7 @@
 		"apollo-datasource": "^3.3.2",
 		"apollo-server-caching": "^3.3.0",
 		"apollo-server-express": "^3.13.0",
+		"axios": "^1.6.2",
 		"bcrypt": "^5.1.1",
 		"cors": "^2.8.5",
 		"dotenv": "^16.3.1",

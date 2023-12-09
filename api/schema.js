@@ -7,6 +7,8 @@ export const typeDefs = gql`
 		getMovie(id: Int!): MovieResponse
 		"Get the lists of all movies in our db"
 		getMovies: MoviesResponse
+		"Get Movies from TMDB API"
+		getDiscoverMovies(pageNumber: Int!): getDiscoverMoviesResponse
 		"create bulk movies and save them in the db"
 		seedMovies(moviesData: [MovieInput!]!): MoviesResponse
 		"Get a specific user by Id"
@@ -33,6 +35,10 @@ export const typeDefs = gql`
 		deleteUser(id: Int!): UserResponse
 		"Create a new review for a movie"
 		createReview(data: ReviewInput): ReviewResponse
+	}
+
+	type getDiscoverMoviesResponse {
+		results: [Movie]
 	}
 
 	type MovieResponse {
@@ -112,11 +118,21 @@ export const typeDefs = gql`
 
 	# The dat we want the movie object to return to our users.
 	type Movie {
-		id: Int!
-		title: String!
-		description: String!
-		posterUrl: String!
-		rating: Int!
+		movieId: Int!
+		adult: Boolean
+		backkdrop_path: String
+		id: Int
+		original_language: String
+		original_title: String
+		overview: String
+		popularity: Float
+		poster_path: String
+		release_date: String
+		title: String
+		video: Boolean
+		vote_average: Float
+		vote_count: Int
+		genre_ids: JSON
 		movieReviews: [Review]
 	}
 	# give us means to type json object

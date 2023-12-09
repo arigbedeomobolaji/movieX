@@ -13,7 +13,7 @@ import { MovieAPI } from "./datasource/MovieDatasource.js";
 import { UserAPI } from "./datasource/UserDatasource.js";
 import { authenticateUser } from "./middlewares/authenticateUser.js";
 import { ReviewAPI } from "./datasource/ReviewDatasource.js";
-import { sequelize } from "./utils/mysql.js";
+import { TmdbAPI } from "./datasource/RESTMovieDatasource.js";
 dotenv.config();
 
 const schema = makeExecutableSchema({ typeDefs, resolvers });
@@ -33,6 +33,7 @@ const server = new ApolloServer({
 		movieAPI: new MovieAPI(),
 		userAPI: new UserAPI(),
 		reviewAPI: new ReviewAPI(),
+		tmdbAPI: new TmdbAPI(),
 	}),
 	cache: new InMemoryLRUCache({
 		//~100MiB

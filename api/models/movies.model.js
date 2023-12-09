@@ -1,8 +1,6 @@
 import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../utils/mysql.js";
 import validator from "validator";
-import User from "./users.model.js";
-import Review from "./reviews.model.js";
 
 // to delete protect route before sending to client
 // const PROTECTED_ATTRIBUTES = ["password", "token"];
@@ -16,12 +14,17 @@ class Movie extends Model {
 Movie.init(
 	{
 		// Model attributes are defined here
-		id: {
+		movieId: {
 			type: DataTypes.INTEGER,
 			allowNull: false,
 			autoIncrement: true,
 			primaryKey: true,
 		},
+		adult: DataTypes.BOOLEAN,
+		genre_ids: DataTypes.JSON,
+		backkdrop_path: DataTypes.STRING(2000),
+		id: DataTypes.INTEGER,
+		original_language: "en",
 		title: {
 			type: DataTypes.STRING,
 			allowNull: false,
@@ -29,14 +32,14 @@ Movie.init(
 				notEmpty: true,
 			},
 		},
-		description: {
-			type: DataTypes.STRING(400),
+		overview: {
+			type: DataTypes.STRING(3000),
 			allowNull: false,
 			validate: {
 				notEmpty: true,
 			},
 		},
-		posterUrl: {
+		poster_path: {
 			type: DataTypes.STRING(2000),
 			allowNull: false,
 			validate: {
@@ -52,8 +55,8 @@ Movie.init(
 				},
 			},
 		},
-		rating: {
-			type: DataTypes.INTEGER,
+		vote_average: {
+			type: DataTypes.DECIMAL(5, 4),
 			allowNull: false,
 			defaultValue: 1,
 			validate: {
@@ -68,6 +71,11 @@ Movie.init(
 				},
 			},
 		},
+		popularity: DataTypes.DECIMAL(6, 4),
+		release_date: DataTypes.DATEONLY,
+		original_title: DataTypes.STRING(500),
+		video: DataTypes.BOOLEAN,
+		vote_count: DataTypes.INTEGER,
 	},
 	{
 		sequelize,

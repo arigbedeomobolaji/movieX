@@ -37,6 +37,16 @@ const resolvers = {
 		getMovie,
 		getMovies,
 		seedMovies,
+		async getDiscoverMovies(_, { pageNumber }, { dataSources }) {
+			const movies = await dataSources.tmdbAPI.getDiscoverMovies(
+				pageNumber
+			);
+			console.log(movies);
+			// if (movies) {
+			// 	console.log(movies);
+			// }
+			// return { results: movies.results };
+		},
 	},
 
 	Mutation: {
