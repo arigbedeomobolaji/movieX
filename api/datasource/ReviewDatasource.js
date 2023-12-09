@@ -16,6 +16,7 @@ export class ReviewAPI extends DataSource {
 	}
 
 	async getMovieReviews(movieId) {
+		console.log(await Review.findAll());
 		return await Review.findAll({ where: { movieId } });
 	}
 }

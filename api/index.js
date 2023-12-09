@@ -20,6 +20,7 @@ const schema = makeExecutableSchema({ typeDefs, resolvers });
 
 const server = new ApolloServer({
 	schema,
+	introspection: true,
 	context: async ({ req }) => {
 		// Extract the token from the Authorization header
 		const authorizationStr = req.headers.authorization || "";

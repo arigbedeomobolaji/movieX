@@ -1,5 +1,5 @@
 /* eslint-disable no-throw-literal */
-import { Review, User } from "../models/index.js";
+import { User } from "../models/index.js";
 import { DataSource } from "apollo-datasource";
 import { validOperation } from "../utils/validOperation.js";
 import { AuthenticationError } from "apollo-server-express";
@@ -76,14 +76,16 @@ export class UserAPI extends DataSource {
 			errorFormat("Movie not in Database", 404);
 		}
 		updates.forEach((field) => {
-			if (field === "password") {
-				let token = user.generateAuthToken();
-				user.tokens = user.tokens.concat({ token });
-			} else {
-				user[field] = updateUser[field];
-			}
+			user[field] = updateUser[field];
 		});
-		return await user.save();
+		user.tokens.pop();
+		let token = user.generateAuthToken();
+		user.tokens = user.tokens.concat({ token });
+		const updatedUser = await user.save();
+		return {
+			token,
+			updatedUser,
+		};
 	}
 
 	async deleteUser(userId) {

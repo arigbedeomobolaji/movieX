@@ -1,6 +1,5 @@
 import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../utils/mysql.js";
-import validator from "validator";
 
 // to delete protect route before sending to client
 // const PROTECTED_ATTRIBUTES = ["password", "token"];
@@ -14,7 +13,7 @@ class Movie extends Model {
 Movie.init(
 	{
 		// Model attributes are defined here
-		movieId: {
+		id: {
 			type: DataTypes.INTEGER,
 			allowNull: false,
 			autoIncrement: true,
@@ -22,9 +21,9 @@ Movie.init(
 		},
 		adult: DataTypes.BOOLEAN,
 		genre_ids: DataTypes.JSON,
-		backkdrop_path: DataTypes.STRING(2000),
-		id: DataTypes.INTEGER,
-		original_language: "en",
+		backdrop_path: DataTypes.STRING(2000),
+		tmdb_id: DataTypes.INTEGER,
+		original_language: DataTypes.STRING(10),
 		title: {
 			type: DataTypes.STRING,
 			allowNull: false,
@@ -40,39 +39,26 @@ Movie.init(
 			},
 		},
 		poster_path: {
-			type: DataTypes.STRING(2000),
+			type: DataTypes.STRING(1000),
 			allowNull: false,
-			validate: {
-				isUrl(value) {
-					if (
-						!validator.isURL(value, {
-							require_host: true,
-							require_valid_protocol: true,
-						})
-					) {
-						throw new Error("Only Valid Url are allowed");
-					}
-				},
-			},
 		},
 		vote_average: {
-			type: DataTypes.DECIMAL(5, 4),
-			allowNull: false,
+			type: DataTypes.FLOAT(5, 4),
 			defaultValue: 1,
 			validate: {
-				isNumeric: true,
+				isFloat: true,
 				min: {
 					args: 1,
 					msg: "Rating must be greater than zero (0)",
 				},
 				max: {
-					args: 5,
-					msg: "Rating must be less than six (6)",
+					args: 10,
+					msg: "Rating must be less than six (11)",
 				},
 			},
 		},
-		popularity: DataTypes.DECIMAL(6, 4),
-		release_date: DataTypes.DATEONLY,
+		popularity: DataTypes.FLOAT(10, 6),
+		release_date: DataTypes.STRING,
 		original_title: DataTypes.STRING(500),
 		video: DataTypes.BOOLEAN,
 		vote_count: DataTypes.INTEGER,

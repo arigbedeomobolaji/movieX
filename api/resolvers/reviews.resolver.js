@@ -27,6 +27,7 @@ export const getMyReviews = async ({ id }, _, { dataSources, user }) => {
 
 export const getMovieReviews = async ({ id }, _, { dataSources, user }) => {
 	if (user) {
+		console.log(id);
 		return dataSources.reviewAPI.getMovieReviews(id);
 	}
 };

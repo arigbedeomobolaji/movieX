@@ -28,7 +28,7 @@ export const typeDefs = gql`
 		"Create a new User"
 		createUser(data: UserInput): UserTokenResponse
 		"Update the user Data"
-		updateUser(id: Int!, updateData: UserUpdateInput): UserResponse
+		updateUser(id: Int!, updateData: UserUpdateInput): UserTokenResponse
 		"Login a new user"
 		loginUser(email: String!, password: String!): UserTokenResponse
 		"Delete a user by id"
@@ -110,18 +110,27 @@ export const typeDefs = gql`
 	}
 
 	input MovieUpdateInput {
+		adult: Boolean
+		backdrop_path: String
+		original_language: String
+		original_title: String
+		overview: String
+		popularity: Float
+		poster_path: String
+		release_date: String
 		title: String
-		description: String
-		posterUrl: String
-		rating: Int
+		video: String
+		vote_average: Float
+		vote_count: Int
+		genre_ids: JSON
 	}
 
 	# The dat we want the movie object to return to our users.
 	type Movie {
-		movieId: Int!
+		id: Int!
 		adult: Boolean
-		backkdrop_path: String
-		id: Int
+		backdrop_path: String
+		tmdb_id: Int
 		original_language: String
 		original_title: String
 		overview: String
@@ -154,5 +163,7 @@ export const typeDefs = gql`
 	type Review {
 		id: Int!
 		review: String!
+		userId: Int!
+		movieId: Int!
 	}
 `;

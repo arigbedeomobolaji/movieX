@@ -1,6 +1,6 @@
 import { RESTDataSource } from "@apollo/datasource-rest";
 import dotenv from "dotenv";
-import { Movie } from "../models.js";
+import { Movie } from "../models/index.js";
 dotenv.config();
 
 export class TmdbAPI extends RESTDataSource {
@@ -19,8 +19,16 @@ export class TmdbAPI extends RESTDataSource {
 		);
 		if (movies) {
 			if (Array.isArray(movies.results)) {
-				console.log({ from: movies.results });
-				// return await Movie.bulkCreate(movies.results);
+				const data = movies.results.map((movie) => {
+					const id = movie.id;
+					delete movie.id;
+					return {
+						...movie,
+						tmdb_id: id,
+					};
+				});
+				console.log(data);
+				return await Movie.bulkCreate(data);
 			}
 		}
 	}

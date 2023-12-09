@@ -41,7 +41,7 @@ export async function getUser(_, { id }, { dataSources, user }) {
 export async function updateUser(_, { id, updateData }, { dataSources, user }) {
 	try {
 		if (user && user.id === id) {
-			const updatedUser = await dataSources.userAPI.updateUser(
+			const { token, updatedUser } = await dataSources.userAPI.updateUser(
 				id,
 				updateData
 			);
@@ -50,6 +50,7 @@ export async function updateUser(_, { id, updateData }, { dataSources, user }) {
 				success: true,
 				message: "User successfully created.",
 				user: updatedUser,
+				token,
 			};
 		} else {
 			throw new ForbiddenError("Unauthorized Access");
@@ -65,13 +66,17 @@ export async function loginUser(_, { email, password }, { dataSources }) {
 			email,
 			password
 		);
-		return {
-			code: 201,
-			success: true,
-			message: "User successfully created.",
-			user,
-			token,
-		};
+		if (user && password) {
+			return {
+				code: 201,
+				success: true,
+				message: "User successfully created.",
+				user,
+				token,
+			};
+		} else {
+			throw errorFormat("Bad Request. Please Create account.", 400);
+		}
 	} catch (error) {
 		return errorResponse(error);
 	}

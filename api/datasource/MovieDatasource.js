@@ -33,7 +33,21 @@ export class MovieAPI extends DataSource {
 	}
 
 	async updateMovie(movieId, updateData) {
-		const allowedField = ["title", "description", "posterUrl", "rating"];
+		const allowedField = [
+			"adult",
+			"backdrop_path",
+			"original_language",
+			"original_title",
+			"overview",
+			"popularity",
+			"poster_path",
+			"release_date",
+			"title",
+			"video",
+			"vote_average",
+			"vote_count",
+			"genre_ids",
+		];
 		const updates = validOperation(allowedField, updateData);
 		const id = Number(movieId);
 		let movie = await Movie.findByPk(id);

@@ -1,9 +1,7 @@
 import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../utils/mysql.js";
 
-class Review extends Model {
-	// Defining association
-}
+class Review extends Model {}
 
 Review.init(
 	{
@@ -32,8 +30,6 @@ Review.init(
 	}
 );
 
-// Review.belongsTo(User, { foreignKey: "UserId", as: "user" });
-// Review.belongsTo(Movie, { foreignKey: "movieId", as: "movie" });
 // Create the table if it doesn't exist
 Review.sync();
 
