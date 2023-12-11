@@ -70,6 +70,7 @@ export const GET_MOVIE = gql`
 					id
 					review
 					reviewer {
+						id
 						username
 					}
 				}

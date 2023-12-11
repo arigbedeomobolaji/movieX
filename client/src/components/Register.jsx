@@ -19,7 +19,7 @@ const Register = ({ setIsLogin }) => {
 				JSON.stringify(data.createUser.token)
 			);
 			userVar(data.createUser.user);
-			navigate(state?.from || "/movies");
+			navigate(state?.from || "/");
 			return;
 		}
 

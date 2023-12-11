@@ -2,9 +2,9 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Root from "./routes/root";
 import ErrorPage from "./components/error-page";
 import Movies from "./routes/layout/movies";
-import Movie from "./routes/movie";
 import Auth from "./routes/auth";
 import ProtectedRoute from "./routes/protected";
+import MovieDetails from "./routes/MovieDetail";
 
 const router = createBrowserRouter([
 	{
@@ -19,18 +19,14 @@ const router = createBrowserRouter([
 				path: "/auth",
 				element: <Auth />,
 			},
-		],
-	},
-	{
-		element: <ProtectedRoute />,
-		children: [
 			{
-				path: "/movies",
-				element: <Movies />,
-			},
-			{
-				path: "/movies/:movieId",
-				element: <Movie />,
+				element: <ProtectedRoute />,
+				children: [
+					{
+						path: "/movies/:movieId",
+						element: <MovieDetails />,
+					},
+				],
 			},
 		],
 	},

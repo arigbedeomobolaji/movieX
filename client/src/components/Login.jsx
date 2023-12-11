@@ -13,7 +13,7 @@ const Login = ({ setIsLogin }) => {
 	const [error, setError] = useState(null);
 	const navigate = useNavigate();
 	const { state } = useLocation();
-	const from = state?.from || "/movies";
+	const from = state?.from || "/";
 
 	useEffect(() => {
 		if (data?.loginUser?.token) {

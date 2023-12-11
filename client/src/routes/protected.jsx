@@ -5,16 +5,13 @@ import Error from "../components/Error";
 import { useQuery, useReactiveVar } from "@apollo/client";
 import { userVar } from "../graphql/cache";
 import { CURRENT_USER } from "../graphql/user.queries";
-import Navbar from "../components/Navbar";
 
 export default function ProtectedRoute() {
 	const navigate = useNavigate();
 	const user = useReactiveVar(userVar);
-	const { data, loading, error } =
-		!user &&
-		useQuery(CURRENT_USER, {
-			fetchPolicy: "network-only",
-		});
+	const { data, loading, error } = useQuery(CURRENT_USER, {
+		fetchPolicy: "network-only",
+	});
 
 	const state = useLocation();
 	useEffect(() => {
@@ -37,7 +34,6 @@ export default function ProtectedRoute() {
 		<>
 			{user && (
 				<>
-					<Navbar />
 					<Outlet />
 				</>
 			)}
