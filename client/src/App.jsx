@@ -8,7 +8,6 @@ import ProtectedRoute from "./routes/protected";
 
 const router = createBrowserRouter([
 	{
-		path: "/",
 		element: <Root />,
 		errorElement: <ErrorPage />,
 		children: [
@@ -25,6 +24,10 @@ const router = createBrowserRouter([
 	{
 		element: <ProtectedRoute />,
 		children: [
+			{
+				path: "/movies",
+				element: <Movies />,
+			},
 			{
 				path: "/movies/:movieId",
 				element: <Movie />,

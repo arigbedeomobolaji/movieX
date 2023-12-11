@@ -2,8 +2,11 @@
 import {
 	createUser,
 	getUser,
+	currentUser,
 	updateUser,
 	loginUser,
+	logout,
+	logoutAll,
 	getAllUser,
 	deleteUser,
 } from "./resolvers/users.resolver.js";
@@ -34,6 +37,7 @@ const resolvers = {
 	Query: {
 		getUser,
 		getAllUser,
+		currentUser,
 		getMovie,
 		getMovies,
 		seedMovies,
@@ -42,7 +46,6 @@ const resolvers = {
 				pageNumber
 			);
 			if (movies) {
-				console.log(movies);
 				return { results: movies };
 			}
 		},
@@ -53,13 +56,15 @@ const resolvers = {
 		createUser,
 		updateUser,
 		loginUser,
+		logout,
+		logoutAll,
 		deleteUser,
 		updateMovie,
 		deleteMovie,
 		createReview,
 	},
 	User: {
-		userReviews: getMyReviews,
+		reviewer: getMyReviews,
 	},
 	Movie: {
 		movieReviews: getMovieReviews,

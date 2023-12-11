@@ -3,28 +3,25 @@ import { useQuery, useReactiveVar } from "@apollo/client";
 import MovieCard from "./MovieCard";
 import { GET_MOVIES } from "../graphql/queries";
 import { moviesVar } from "../graphql/cache";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import SkeletonComponent from "./Skeleton";
-import { Alert, Snackbar } from "@mui/material";
+import { Alert } from "@mui/material";
+import Error from "./Error";
 function MovieList() {
 	const moviesData = useReactiveVar(moviesVar);
 	const { data, loading, error } = useQuery(GET_MOVIES);
-	const [open, setOpen] = useState(true);
-	const handleClose = (event, reason) => {
-		if (reason === "clickaway") {
-			return;
-		}
-		setOpen(false);
-	};
 
 	useEffect(() => {
-		if (data?.movies?.movies) {
-			moviesVar(data.movies.movies);
-			localStorage.setItem("moviesData", JSON.stringify(moviesData));
+		if (data?.getMovies?.movies) {
+			moviesVar(data.getMovies.movies);
+			localStorage.setItem(
+				"moviesData",
+				JSON.stringify(data.getMovies.movies)
+			);
 		}
 
 		return () => {};
-	}, [data, moviesData]);
+	}, [data]);
 
 	if (loading) {
 		return (
@@ -43,25 +40,10 @@ function MovieList() {
 	}
 
 	if (error) {
-		return (
-			<Snackbar
-				open={open}
-				autoHideDuration={6000}
-				onClose={handleClose}
-				anchorOrigin={{ vertical: "top", horizontal: "left" }}
-			>
-				<Alert
-					onClose={handleClose}
-					severity="error"
-					sx={{ width: "100%" }}
-				>
-					{error.message}
-				</Alert>
-			</Snackbar>
-		);
+		return <Error error={error} />;
 	}
 	return (
-		<div className="flex flex-col pb-5">
+		<div className="flex flex-col pb-5 mb-10">
 			{moviesData?.length ? (
 				<div className="max-w-7xl mx-3 my-5 lg:mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-items-start md:justify-items-center">
 					{moviesData.map((movie) => (

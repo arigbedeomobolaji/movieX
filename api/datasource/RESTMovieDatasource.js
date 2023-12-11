@@ -27,7 +27,6 @@ export class TmdbAPI extends RESTDataSource {
 						tmdb_id: id,
 					};
 				});
-				console.log(data);
 				return await Movie.bulkCreate(data);
 			}
 		}

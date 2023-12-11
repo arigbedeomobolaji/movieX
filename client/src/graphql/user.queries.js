@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 
-export const ME = gql`
-	query GetUser($getUserId: Int!) {
-		getUser(id: $getUserId) {
+export const CURRENT_USER = gql`
+	query CurrentUser {
+		currentUser {
 			code
 			success
 			message
@@ -11,9 +11,6 @@ export const ME = gql`
 				username
 				email
 				isAdmin
-				tokens {
-					token
-				}
 			}
 		}
 	}

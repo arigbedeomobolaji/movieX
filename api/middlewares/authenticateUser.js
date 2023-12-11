@@ -1,7 +1,6 @@
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import User from "../models/users.model.js";
-import { errorFormat } from "../utils/errorFormat.js";
 dotenv.config();
 
 const jwtSecret = process.env.TOKEN_SECRET;
@@ -11,7 +10,7 @@ export const authenticateUser = async (token) => {
 	try {
 		const decodedToken = await jwt.verify(token, jwtSecret);
 		if (!decodedToken) {
-			throw errorFormat("Access Denied. User not authorized.");
+			return null;
 		}
 		return decodedToken;
 	} catch (error) {
@@ -20,14 +19,17 @@ export const authenticateUser = async (token) => {
 				ignoreExpiration: true,
 			});
 			const user = await User.findByPk(payload.id);
+			if (!user || !user?.tokens?.length) {
+				return null;
+			}
 			user.tokens = user.tokens.filter(
 				(userToken) => token !== userToken.token
 			);
 			const updatedUser = await user.save();
 			if (updatedUser) {
-				return undefined;
+				return null;
 			}
 		}
-		throw errorFormat("Authentication failed.", 401);
+		return null;
 	}
 };

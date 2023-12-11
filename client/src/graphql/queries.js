@@ -1,17 +1,27 @@
 import { gql } from "@apollo/client";
 
 export const GET_MOVIES = gql`
-	query Movies {
+	query GetMovies {
 		getMovies {
 			code
 			success
 			message
 			movies {
 				id
+				adult
+				backdrop_path
+				id
+				original_language
+				original_title
+				overview
+				popularity
+				poster_path
+				release_date
 				title
-				description
-				posterUrl
-				rating
+				video
+				vote_average
+				vote_count
+				genre_ids
 			}
 		}
 	}
@@ -43,26 +53,26 @@ export const GET_MOVIE = gql`
 			movie {
 				id
 				title
-				description
-				posterUrl
-				rating
-			}
-		}
-	}
-`;
-
-export const SEED_MOVIES = gql`
-	query SeedMovies($moviesData: [MovieInput!]!) {
-		seedMovies(moviesData: $moviesData) {
-			code
-			success
-			message
-			movies {
-				id
-				title
-				description
-				posterUrl
-				rating
+				adult
+				backdrop_path
+				tmdb_id
+				original_language
+				original_title
+				overview
+				popularity
+				poster_path
+				release_date
+				video
+				vote_average
+				vote_count
+				genre_ids
+				movieReviews {
+					id
+					review
+					reviewer {
+						username
+					}
+				}
 			}
 		}
 	}

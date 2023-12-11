@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { useQuery } from "@apollo/client";
+import { useQuery, useReactiveVar } from "@apollo/client";
 import { useNavigate, useParams } from "react-router-dom";
 import moment from "moment";
 import { Link } from "react-router-dom";
@@ -7,7 +7,8 @@ import { TiChevronLeft } from "react-icons/ti";
 import { GET_MOVIE } from "../graphql/queries";
 import { useEffect, useState } from "react";
 import { Skeleton } from "antd";
-import { Alert, Snackbar } from "@mui/material";
+import Error from "../components/Error";
+import { userVar } from "../graphql/cache";
 
 export default function MovieDetails() {
 	const navigate = useNavigate();
@@ -18,32 +19,18 @@ export default function MovieDetails() {
 	const { data, error } = useQuery(GET_MOVIE, {
 		variables: { movieId: Number(movieId) },
 	});
-	const [open, setOpen] = useState(true);
-	const handleClose = (event, reason) => {
-		if (reason === "clickaway") {
-			return;
-		}
-		setOpen(false);
-	};
+
+	const user = useReactiveVar(userVar);
 
 	useEffect(() => {
 		if (error) {
-			console.log(error);
 			setPageLoading(false);
 			setPageError(error.message);
-			var errorTimeout = setTimeout(() => {
-				navigate("/");
-			}, 1500);
 		}
 		if (data?.getMovie?.movie) {
-			console.log(data.getMovie.movie);
 			setCurrentMovie(data.getMovie.movie);
 			setPageLoading(false);
 		}
-
-		return () => {
-			clearTimeout(errorTimeout);
-		};
 	}, [data, error, navigate]);
 
 	if (pageLoading) {
@@ -55,22 +42,7 @@ export default function MovieDetails() {
 	}
 
 	if (pageError) {
-		return (
-			<Snackbar
-				open={open}
-				autoHideDuration={6000}
-				onClose={handleClose}
-				anchorOrigin={{ vertical: "top", horizontal: "left" }}
-			>
-				<Alert
-					onClose={handleClose}
-					severity="error"
-					sx={{ width: "100%" }}
-				>
-					{JSON.stringify(pageError)}
-				</Alert>
-			</Snackbar>
-		);
+		return <Error error={pageError} />;
 	}
 	return (
 		<div className="max-w-lg ml-3 md:ml-24">

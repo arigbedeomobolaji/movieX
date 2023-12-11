@@ -13,10 +13,11 @@ export const typeDefs = gql`
 		seedMovies(moviesData: [MovieInput!]!): MoviesResponse
 		"Get a specific user by Id"
 		getUser(id: Int!): UserResponse
+		"Get the current user"
+		currentUser: UserResponse
 		"An Admin to get all the users"
 		getAllUser: UsersResponse
 	}
-
 	# Mutation type defines entry points for write Operations => POST, PATCH,PUT,DELETE (create,update&delete)
 	type Mutation {
 		"Create a new movie in our database"
@@ -31,6 +32,10 @@ export const typeDefs = gql`
 		updateUser(id: Int!, updateData: UserUpdateInput): UserTokenResponse
 		"Login a new user"
 		loginUser(email: String!, password: String!): UserTokenResponse
+		"Logout a user on a particular device"
+		logout(id: Int!, token: String!): UserResponse
+		"Logout a user on all device"
+		logoutAll(id: Int!): UserResponse
 		"Delete a user by id"
 		deleteUser(id: Int!): UserResponse
 		"Create a new review for a movie"
@@ -153,7 +158,7 @@ export const typeDefs = gql`
 		username: String!
 		email: String!
 		isAdmin: Boolean
-		userReviews: [Review]
+		reviewer: [Review]
 	}
 
 	type Token {
@@ -163,7 +168,7 @@ export const typeDefs = gql`
 	type Review {
 		id: Int!
 		review: String!
-		userId: Int!
+		reviewer: User
 		movieId: Int!
 	}
 `;

@@ -53,7 +53,7 @@ export class UserAPI extends DataSource {
 	Old way in rest api
 	async getUser(id) {
 		return await User.findByPk(id, , {
-			include: [{ model: Review, as: "userReviews" }],
+			include: [{ model: Review, as: "reviewer" }],
 		});
 	} 
 	*/
@@ -93,5 +93,19 @@ export class UserAPI extends DataSource {
 		const user = await User.findByPk(id);
 		if (!user) this.errorFormat("user not in Database", 404);
 		return await user.destroy();
+	}
+
+	async logout(userId, token) {
+		const user = await User.findByPk(userId);
+		user.tokens = user.tokens.filter(
+			(userToken) => userToken.token !== token
+		);
+		return await user.save();
+	}
+
+	async logoutAll(userId) {
+		const user = await User.findByPk(userId);
+		user.tokens = [];
+		return await user.save();
 	}
 }

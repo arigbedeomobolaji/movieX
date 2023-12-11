@@ -29,7 +29,6 @@ class User extends Model {
 	async generateAuthToken() {
 		const user = this;
 		const { id, username, email, isAdmin } = user;
-		console.log(id, username, email, isAdmin);
 		delete user.password;
 		const token = await jwt.sign({ id, username, email, isAdmin }, secret, {
 			expiresIn: "1h",

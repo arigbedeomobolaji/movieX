@@ -38,6 +38,26 @@ export async function getUser(_, { id }, { dataSources, user }) {
 	}
 }
 
+export async function currentUser(_, __, { dataSources, user }) {
+	try {
+		if (user) {
+			return {
+				code: 200,
+				success: true,
+				message: "user returned.",
+				user,
+			};
+		} else {
+			throw new AuthenticationError("Access Unauthorized.");
+		}
+	} catch (error) {
+		if (error.name === "AuthenticationError") {
+			return errorResponse(errorFormat(error.message, 401));
+		}
+		return errorResponse(error);
+	}
+}
+
 export async function updateUser(_, { id, updateData }, { dataSources, user }) {
 	try {
 		if (user && user.id === id) {
@@ -82,6 +102,43 @@ export async function loginUser(_, { email, password }, { dataSources }) {
 	}
 }
 
+export async function logout(_, { id, token }, { dataSources }) {
+	try {
+		const user = await dataSources.userAPI.logout(id, token);
+		if (user) {
+			return {
+				code: 201,
+				success: true,
+				message: "User token successfully deleted.",
+				user,
+				token,
+			};
+		} else {
+			throw errorFormat("Bad Request. Please Create account.", 400);
+		}
+	} catch (error) {
+		return errorResponse(error);
+	}
+}
+
+export async function logoutAll(_, { id }, { dataSources }) {
+	try {
+		const user = await dataSources.userAPI.logoutAll(id);
+		if (user) {
+			return {
+				code: 201,
+				success: true,
+				message: "User logged out on all device",
+				user,
+			};
+		} else {
+			throw errorFormat("Bad Request. Please Create account.", 400);
+		}
+	} catch (error) {
+		return errorResponse(error);
+	}
+}
+
 export async function getAllUser(_, __, { dataSources, user }) {
 	try {
 		if (user && user.isAdmin) {
@@ -96,7 +153,6 @@ export async function getAllUser(_, __, { dataSources, user }) {
 			throw new AuthenticationError("Only admin can access this route");
 		}
 	} catch (error) {
-		console.log(error.name);
 		if (error.name === "AuthenticationError") {
 			return errorResponse(errorFormat(error.message, 401));
 		}
@@ -108,7 +164,7 @@ export async function deleteUser(_, { id }, { dataSources, user }) {
 	try {
 		if (user) {
 			const deletedUser = await dataSources.userAPI.deleteUser(id);
-			console.log({ deletedUser });
+
 			return {
 				code: 201,
 				success: true,
@@ -119,7 +175,6 @@ export async function deleteUser(_, { id }, { dataSources, user }) {
 			throw new AuthenticationError("Only admin can access this route");
 		}
 	} catch (error) {
-		console.log(error.name);
 		if (error.name === "AuthenticationError") {
 			return errorResponse(errorFormat(error.message, 401));
 		}

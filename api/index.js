@@ -27,6 +27,7 @@ const server = new ApolloServer({
 		const token = authorizationStr.split(" ")[1];
 		// Authenticate the user and add the user object to the context
 		const user = token ? await authenticateUser(token) : null;
+
 		return typeof user === "object" ? { user } : null;
 	},
 
@@ -55,12 +56,10 @@ server.applyMiddleware({ app });
 
 app.get("/", async (req, res) => {
 	try {
-		console.log("here");
 		res.status(200).json({
 			message: "go to /graphql to interact with our API.",
 		});
 	} catch (error) {
-		console.log(error);
 		res.status(500).send({ error });
 	}
 });

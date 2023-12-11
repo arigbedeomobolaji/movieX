@@ -27,21 +27,16 @@ export const getMovie = async (_, { id }, { dataSources, user }) => {
 	}
 };
 
-export const getMovies = async (_, __, { dataSources, user }) => {
+export const getMovies = async (_, __, { dataSources }) => {
 	try {
-		console.log(user);
-		if (user && user.isAdmin) {
-			const movies = await dataSources.movieAPI.getMovies();
-			if (movies)
-				return {
-					code: 200,
-					success: true,
-					message: "Movies returned",
-					movies,
-				};
-		} else {
-			throw errorFormat("Only Admin can access this route", 401);
-		}
+		const movies = await dataSources.movieAPI.getMovies();
+		if (movies)
+			return {
+				code: 200,
+				success: true,
+				message: "Movies returned",
+				movies,
+			};
 	} catch (error) {
 		return errorResponse(error);
 	}

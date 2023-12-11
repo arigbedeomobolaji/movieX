@@ -1,5 +1,6 @@
 import Review from "../models/reviews.model.js";
 import { DataSource } from "apollo-datasource";
+import User from "../models/users.model.js";
 export class ReviewAPI extends DataSource {
 	constructor() {
 		super();
@@ -16,7 +17,9 @@ export class ReviewAPI extends DataSource {
 	}
 
 	async getMovieReviews(movieId) {
-		console.log(await Review.findAll());
-		return await Review.findAll({ where: { movieId } });
+		return await Review.findAll({
+			where: { movieId },
+			include: [{ model: User, as: "reviewer" }],
+		});
 	}
 }

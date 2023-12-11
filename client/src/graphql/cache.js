@@ -2,6 +2,7 @@
 import { InMemoryCache, makeVar } from "@apollo/client";
 
 export const moviesVar = makeVar([]);
+export const userVar = makeVar(null);
 
 export const cache = new InMemoryCache({
 	typePolicies: {
@@ -18,6 +19,7 @@ export const cache = new InMemoryCache({
 						return moviesVar();
 					},
 				},
+				userVar: {},
 			},
 		},
 	},

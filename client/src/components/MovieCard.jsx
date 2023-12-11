@@ -8,18 +8,22 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import { Button, CardActionArea, Divider, Rating } from "@mui/material";
 import { DELETE_MOVIE } from "../graphql/mutations";
-import { useMutation } from "@apollo/client";
+import { useMutation, useReactiveVar } from "@apollo/client";
 import { GET_MOVIES } from "../graphql/queries";
 import { useState } from "react";
 import BasicModal from "./Modal";
 import { useNavigate } from "react-router-dom";
+import { userVar } from "../graphql/cache";
+
+const tmdbImageBaseUrl = import.meta.env.VITE_TMDB_IMAGE_BASE_URL;
 
 export default function MovieCard({
 	id,
 	title,
-	description,
-	posterUrl,
-	rating,
+	overview,
+	poster_path,
+	backdrop_path,
+	vote_average,
 }) {
 	const navigate = useNavigate();
 	const [deleteMovie] = useMutation(DELETE_MOVIE, {
@@ -43,11 +47,12 @@ export default function MovieCard({
 		onError: (error) => alert(error.message),
 		refetchQueries: [GET_MOVIES],
 	});
-	const movieData = { title, description, posterUrl, rating };
+	const movieData = { title, overview, poster_path, vote_average };
 	const [open, setOpen] = useState(false);
 	const handleOpen = () => setOpen(true);
 	const handleClose = () => setOpen(false);
 	const [performAction, setPerformAction] = useState(false);
+	const user = useReactiveVar(userVar);
 
 	return (
 		// <Link to={`/movies/${id}`} className="no-underline">
@@ -55,14 +60,14 @@ export default function MovieCard({
 			<CardActionArea className="mb-0 relative h-[275px]">
 				<div className="w-full h-[350px] blur-sm opacity-90">
 					<img
-						src={posterUrl}
+						src={`${tmdbImageBaseUrl}/${backdrop_path}`}
 						className="w-full h-full object-cover"
 					/>
 				</div>
 				<CardMedia
 					className="absolute top-0 h-[350px] object-contain z-10"
 					component="img"
-					image={posterUrl}
+					image={`${tmdbImageBaseUrl}/${poster_path}`}
 					alt={title + id}
 				/>
 			</CardActionArea>
@@ -79,21 +84,29 @@ export default function MovieCard({
 							{title}
 						</Typography>
 						<Typography variant="body2" color="text.secondary">
-							{description.length >= 250
-								? description.substring(1, 250) + "..."
-								: description}
+							{overview.length >= 250
+								? overview.substring(1, 250) + "..."
+								: overview}
 						</Typography>
 					</div>
 
 					<div className="h-1/3  mt-4 flex flex-col justify-end">
 						<div className="flex items-center justify-between px-3">
-							<Rating name="read-only" value={rating} readOnly />
-
-							<MoreVertIcon
-								className="font-extrabold font-poppings text-4xl"
-								onClick={() => setPerformAction(!performAction)}
+							<Rating
+								name="read-only"
+								value={Math.round(vote_average / 2)}
+								readOnly
 							/>
-							{performAction && (
+
+							{user?.isAdmin && (
+								<MoreVertIcon
+									className="font-extrabold font-poppings text-4xl"
+									onClick={() =>
+										setPerformAction(!performAction)
+									}
+								/>
+							)}
+							{performAction && user?.isAdmin && (
 								<div className="flex flex-col items-end justify-center absolute bottom-14 right-10   bg-gray-100 rounded-md text-white  pt-5 shadow-lg sapce-y-3">
 									<Button
 										onClick={deleteMovie}
@@ -114,7 +127,11 @@ export default function MovieCard({
 						</div>
 						<Button
 							className="text-green-700 justify-start"
-							onClick={() => navigate(`/movies/${id}`)}
+							onClick={() =>
+								navigate(`/movies/${id}`, {
+									state: { from: `/movies/${id}` },
+								})
+							}
 						>
 							See More
 						</Button>

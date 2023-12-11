@@ -44,7 +44,7 @@ function Filter() {
 					.includes(filterOption.title.toLowerCase())
 			);
 			filteredData = filteredData.filter(
-				(movie) => movie.rating === rating
+				(movie) => Math.round(movie.vote_average / 2) === rating
 			);
 			moviesVar(filteredData);
 			return;
@@ -66,7 +66,7 @@ function Filter() {
 
 		if (rating) {
 			const filteredData = savedMovies.filter(
-				(movie) => movie.rating === rating
+				(movie) => Math.round(movie.vote_average / 2) === rating
 			);
 			moviesVar(filteredData);
 			return;
