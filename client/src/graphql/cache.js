@@ -2,13 +2,20 @@
 import { InMemoryCache, makeVar } from "@apollo/client";
 
 export const moviesVar = makeVar([]);
+export const paginatedMoviesVar = makeVar([]);
 export const userVar = makeVar(null);
 
 export const cache = new InMemoryCache({
 	typePolicies: {
 		Query: {
 			fields: {
-				movies: {
+				getMovies: {
+					// modify before write!
+					merge(existing = [], incoming) {
+						return incoming;
+					},
+				},
+				getMovie: {
 					// modify before write!
 					merge(existing = [], incoming) {
 						return incoming;
@@ -19,7 +26,11 @@ export const cache = new InMemoryCache({
 						return moviesVar();
 					},
 				},
-				userVar: {},
+				paginatedMoviesVar: {
+					read() {
+						return paginatedMoviesVar();
+					},
+				},
 			},
 		},
 	},

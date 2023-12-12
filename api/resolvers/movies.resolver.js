@@ -27,6 +27,21 @@ export const getMovie = async (_, { id }, { dataSources, user }) => {
 	}
 };
 
+export const cursoredMovies = async (
+	_,
+	{ first = 5, after },
+	{ dataSources }
+) => {
+	const { edges, pageInfo } = await dataSources.movieAPI.cursoredMovies(
+		first,
+		after
+	);
+	return {
+		edges,
+		pageInfo,
+	};
+};
+
 export const getMovies = async (_, __, { dataSources }) => {
 	try {
 		const movies = await dataSources.movieAPI.getMovies();
@@ -36,6 +51,32 @@ export const getMovies = async (_, __, { dataSources }) => {
 				success: true,
 				message: "Movies returned",
 				movies,
+			};
+	} catch (error) {
+		return errorResponse(error);
+	}
+};
+
+export const getPaginatedMovies = async (
+	_,
+	{ limit, offset, pageNumber },
+	{ dataSources }
+) => {
+	try {
+		const { moviesCount, paginatedMovies } =
+			await dataSources.movieAPI.getPaginatedMovies(
+				pageNumber,
+				offset,
+				limit
+			);
+		if (paginatedMovies)
+			return {
+				code: 200,
+				success: true,
+				message: "Movies returned",
+				movies: paginatedMovies,
+				moviesCount,
+				page: pageNumber,
 			};
 	} catch (error) {
 		return errorResponse(error);

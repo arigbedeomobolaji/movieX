@@ -12,7 +12,9 @@ import {
 } from "./resolvers/users.resolver.js";
 import {
 	getMovie,
+	getPaginatedMovies,
 	getMovies,
+	cursoredMovies,
 	seedMovies,
 	createMovie,
 	updateMovie,
@@ -40,7 +42,9 @@ const resolvers = {
 		currentUser,
 		getMovie,
 		getMovies,
+		getPaginatedMovies,
 		seedMovies,
+		cursoredMovies,
 		async getDiscoverMovies(_, { pageNumber }, { dataSources }) {
 			const movies = await dataSources.tmdbAPI.getDiscoverMovies(
 				pageNumber

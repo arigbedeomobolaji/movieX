@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { useQuery, useReactiveVar } from "@apollo/client";
+import { useMutation, useQuery, useReactiveVar } from "@apollo/client";
 import { useNavigate, useParams } from "react-router-dom";
 import moment from "moment";
 import { Link } from "react-router-dom";
@@ -10,6 +10,8 @@ import { Skeleton } from "antd";
 import Error from "../components/Error";
 import { Input } from "@mui/material";
 import { userVar } from "../graphql/cache";
+import { IoMdSend } from "react-icons/io";
+import { CREATE_REVIEW } from "../graphql/mutations";
 
 const tmdbImageBaseUrl = import.meta.env.VITE_TMDB_IMAGE_BASE_URL;
 
@@ -24,7 +26,7 @@ export default function MovieDetails() {
 		variables: { movieId: Number(movieId) },
 		fetchPolicy: "network-only",
 	});
-	console.log(yourReview);
+
 	const user = useReactiveVar(userVar);
 	const extraDetails = [
 		"original_language",
@@ -33,6 +35,57 @@ export default function MovieDetails() {
 		"vote_average",
 		"vote_count",
 	];
+
+	const [createReview] = useMutation(CREATE_REVIEW, {
+		update(cache, { data: { createReview } }) {
+			const movieData = {
+				...cache.readQuery({
+					query: GET_MOVIE,
+					variables: { movieId: Number(movieId) },
+					fetchPolicy: "cache-only",
+				}),
+			};
+			let movieReviews = movieData?.getMovie?.movie?.movieReviews;
+			movieReviews = [...movieReviews, createReview];
+			movieData.getMovie.movie.movieReviews = [...movieReviews];
+			cache.writeQuery({
+				query: GET_MOVIE,
+				movieData,
+			});
+			setYourReview("");
+		},
+		refetchQueries: [
+			GET_MOVIE,
+			{
+				variables: { movie: Number(movieId) },
+				fetchPolicy: "network-only",
+			},
+		],
+		onError: (error) => alert(error.message),
+	});
+
+	function handleCreateReview() {
+		createReview({
+			variables: {
+				data: {
+					userId: Number(user.id),
+					movieId: Number(currentMovie.id),
+					review: yourReview,
+				},
+			},
+			optimisticResponse: {
+				createReview: {
+					__typename: "Review",
+					id: "temp-id",
+					review: yourReview,
+					reviewer: {
+						userId: Number(user.id),
+						username: user.username,
+					},
+				},
+			},
+		});
+	}
 
 	useEffect(() => {
 		if (error) {
@@ -56,7 +109,7 @@ export default function MovieDetails() {
 	if (pageError) {
 		return <Error error={pageError} />;
 	}
-	console.log(currentMovie);
+	// console.log(currentMovie);
 	return (
 		<div className="max-w-xl ml-3 md:mx-auto">
 			<Link
@@ -123,46 +176,47 @@ export default function MovieDetails() {
 			</div>
 			<div>
 				<h1 className="heading-text">Reviews</h1>
-				{currentMovie?.movieReviews.map((review) => {
-					console.log(typeof review.reviewer.id, typeof user.id);
-					return (
+				{currentMovie?.movieReviews.map((review) => (
+					<div
+						key={review.id}
+						className={`${
+							review.reviewer.id === user.id
+								? "bg-emerald-50"
+								: "bg-purple-50"
+						} max-w-x  font-poppings text-sm pl-3 p-1 mb-5 relative leading-3`}
+					>
+						<p className="text-purple-500 text-[15px] font-bold leading-3">
+							{review.reviewer.username}
+						</p>
+						<p>{review.review}</p>
 						<div
-							key={review.id}
-							className={`${
+							className={`triangle ${
 								review.reviewer.id === user.id
-									? "bg-rose-50"
-									: "bg-purple-50"
-							} max-w-x  font-poppings text-sm pl-3 p-1 mb-5 relative leading-3`}
-						>
-							<p className="text-purple-500 text-[15px] font-bold leading-3">
-								{review.reviewer.username}
-							</p>
-							<p>{review.review}</p>
-							<div
-								className={`triangle ${
-									review.reviewer.id === user.id
-										? "border-b-rose-50"
-										: "border-b-gray-50"
-								} absolute -left-2 bottom-0`}
-							></div>
-							<div
-								className={`triangle ${
-									review.reviewer.id === user.id
-										? "border-b-rose-50"
-										: "border-b-gray-50"
-								}d -right-2 top-0 rotate-180`}
-							></div>
-						</div>
-					);
-				})}
+									? "border-b-emerald-50"
+									: "border-b-gray-50"
+							} absolute -left-2 bottom-0`}
+						></div>
+						<div
+							className={`triangle ${
+								review.reviewer.id === user.id
+									? "border-b-emerald-50"
+									: "border-b-gray-50"
+							} -right-2 top-0 rotate-180`}
+						></div>
+					</div>
+				))}
 
-				<div className="py-4">
+				<div className="py-4 flex items-center">
 					<Input
 						variant="standard"
 						className="w-full"
 						placeholder="Write your review.."
 						value={yourReview}
 						onChange={(e) => setYourReview(e.target.value)}
+					/>
+					<IoMdSend
+						onClick={handleCreateReview}
+						className="text-purple-500 text-[50px] w-1/12"
 					/>
 				</div>
 			</div>

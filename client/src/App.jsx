@@ -5,6 +5,7 @@ import Movies from "./routes/layout/movies";
 import Auth from "./routes/auth";
 import ProtectedRoute from "./routes/protected";
 import MovieDetails from "./routes/MovieDetail";
+import PaginatedMovieList from "./components/PaginatedMovieList";
 
 const router = createBrowserRouter([
 	{
@@ -25,6 +26,10 @@ const router = createBrowserRouter([
 					{
 						path: "/movies/:movieId",
 						element: <MovieDetails />,
+					},
+					{
+						path: "/movies",
+						element: <PaginatedMovieList />,
 					},
 				],
 			},

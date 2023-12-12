@@ -17,6 +17,20 @@ export const CREATE_MOVIE = gql`
 	}
 `;
 
+export const CREATE_REVIEW = gql`
+	mutation CreateReview($data: ReviewInput) {
+		createReview(data: $data) {
+			code
+			success
+			message
+			review {
+				id
+				review
+			}
+		}
+	}
+`;
+
 export const UPDATE_MOVIE = gql`
 	mutation UpdateMovie($updateMovieId: Int, $updateData: MovieUpdateInput) {
 		updateMovie(id: $updateMovieId, updateData: $updateData) {

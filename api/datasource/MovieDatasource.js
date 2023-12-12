@@ -1,4 +1,5 @@
 /* eslint-disable no-throw-literal */
+import { Sequelize, Op } from "sequelize";
 import { Movie } from "../models/index.js";
 import { errorFormat } from "../utils/errorFormat.js";
 import { validOperation } from "../utils/validOperation.js";
@@ -9,6 +10,56 @@ export class MovieAPI extends DataSource {
 		super();
 		// initialize any configurations or setup here
 		this.baseUrl = "";
+	}
+	async getPaginatedMovies(pageNumber = 1, offset, limit) {
+		const moviesCount = await Movie.count();
+		const nextOffset = (pageNumber - 1) * offset;
+		let paginatedMovies;
+		if (offset * pageNumber > moviesCount) {
+			pageNumber = Math.floor(moviesCount / offset);
+			paginatedMovies = await Movie.findAll({
+				limit,
+				offset: offset * (pageNumber - 1),
+			});
+		} else if (moviesCount > 0 && offset * pageNumber <= moviesCount) {
+			paginatedMovies = await Movie.findAll({
+				limit,
+				offset: nextOffset,
+			});
+		}
+		if (paginatedMovies) {
+			return { paginatedMovies, moviesCount, pageNumber };
+		}
+	}
+
+	async cursoredMovies(first, after) {
+		const cursorOptions = after
+			? { where: { id: { [Op.gt]: after } } }
+			: {};
+		console.log(after);
+		const movies = await Movie.findAll({
+			order: [["id", "ASC"]],
+			limit: first,
+			...cursorOptions,
+		});
+
+		const hasNextPage = movies.length === first;
+		const endCursor = hasNextPage
+			? movies[movies.length - 1].id.toString()
+			: null;
+
+		const edges = movies.map((movie) => ({
+			cursor: movie.id.toString(),
+			node: movie,
+		}));
+
+		return {
+			edges,
+			pageInfo: {
+				hasNextPage,
+				endCursor,
+			},
+		};
 	}
 
 	async getMovies() {

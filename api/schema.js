@@ -3,10 +3,18 @@ import { gql } from "apollo-server-express";
 export const typeDefs = gql`
 	# Special Object type that defines all of the top-level entry points for queries that clients execute against your server.
 	type Query {
+		"Get paginated movie cursor"
+		cursoredMovies(first: Int, after: String): MovieConnection
 		"Get a specific movie from our DB"
 		getMovie(id: Int!): MovieResponse
 		"Get the lists of all movies in our db"
 		getMovies: MoviesResponse
+		"Get paginated Movies"
+		getPaginatedMovies(
+			pageNumber: Int!
+			limit: Int!
+			offset: Int!
+		): PaginatedMoviesResponse
 		"Get Movies from TMDB API"
 		getDiscoverMovies(pageNumber: Int!): getDiscoverMoviesResponse
 		"create bulk movies and save them in the db"
@@ -42,6 +50,21 @@ export const typeDefs = gql`
 		createReview(data: ReviewInput): ReviewResponse
 	}
 
+	type PageInfo {
+		hasNextPage: Boolean!
+		endCursor: String
+	}
+
+	type MovieConnection {
+		edges: [MovieEdge]
+		pageInfo: PageInfo
+	}
+
+	type MovieEdge {
+		cursor: String!
+		node: Movie!
+	}
+
 	type getDiscoverMoviesResponse {
 		results: [Movie]
 	}
@@ -51,6 +74,15 @@ export const typeDefs = gql`
 		success: Boolean!
 		message: String!
 		movie: Movie
+	}
+
+	type PaginatedMoviesResponse {
+		code: Int!
+		success: Boolean!
+		message: String!
+		movies: [Movie]
+		moviesCount: Int
+		page: Int
 	}
 
 	type UserResponse {
@@ -65,6 +97,7 @@ export const typeDefs = gql`
 		message: String!
 		review: Review
 	}
+
 	type UserTokenResponse {
 		code: Int!
 		success: Boolean!

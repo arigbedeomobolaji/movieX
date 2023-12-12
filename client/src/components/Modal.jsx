@@ -69,9 +69,6 @@ export default function BasicModal({
 				__typename: "Movie",
 				id: movieId,
 				...newMovie,
-				// data: {
-
-				// },
 			},
 		},
 		update(cache, { data: { updateMovie } }) {

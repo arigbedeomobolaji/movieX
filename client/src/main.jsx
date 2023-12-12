@@ -29,17 +29,6 @@ const authMiddleware = new ApolloLink((operation, forward) => {
 	return forward(operation);
 });
 
-// const authLink = setContext((_, { headers }) => {
-// 	const token = localStorage.getItem("token");
-
-// 	return {
-// 		headers: {
-// 			...headers,
-// 			authorization: token ? `Bearer ${token}` : "",
-// 		},
-// 	};
-// });
-
 const client = new ApolloClient({
 	link: concat(authMiddleware, httpLink),
 	cache,
@@ -47,8 +36,6 @@ const client = new ApolloClient({
 
 ReactDOM.createRoot(document.getElementById("root")).render(
 	<ApolloProvider client={client}>
-		<React.StrictMode>
-			<App />
-		</React.StrictMode>
+		<App />
 	</ApolloProvider>
 );
