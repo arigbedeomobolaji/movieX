@@ -6,6 +6,7 @@ dotenv.config();
 const database = process.env.database;
 const username = process.env.MYSQL_USERNAME;
 const password = process.env.MYSQL_PASSWORD;
+const host = process.env.MYSQL_HOST;
 
 async function initialize() {
 	try {
@@ -26,7 +27,7 @@ async function initialize() {
 initialize();
 
 export const sequelize = new Sequelize(database, username, password, {
-	host: "localhost",
+	host,
 	dialect: "mysql",
 	logging: false, //disable logging to the console
 });
