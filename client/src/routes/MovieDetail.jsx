@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { useMutation, useQuery, useReactiveVar } from "@apollo/client";
 import { useNavigate, useParams } from "react-router-dom";
+import axios from "axios";
 import moment from "moment";
 import { Link } from "react-router-dom";
 import { TiChevronLeft } from "react-icons/ti";
@@ -14,6 +15,7 @@ import { IoMdSend } from "react-icons/io";
 import { CREATE_REVIEW } from "../graphql/mutations";
 
 const tmdbImageBaseUrl = import.meta.env.VITE_TMDB_IMAGE_BASE_URL;
+const tmdbAuthorization = import.meta.env.VITE_TMDB_ACCESS_TOKEN;
 
 export default function MovieDetails() {
 	const [yourReview, setYourReview] = useState("");
@@ -26,6 +28,9 @@ export default function MovieDetails() {
 		variables: { movieId: Number(movieId) },
 		fetchPolicy: "network-only",
 	});
+
+	const [youtubeKey, setYoutubeKey] = useState("");
+	const [loading, setLoading] = useState(true);
 
 	const user = useReactiveVar(userVar);
 	const extraDetails = [
@@ -88,19 +93,49 @@ export default function MovieDetails() {
 	}
 
 	useEffect(() => {
+		const fetchData = async (tmdb_id) => {
+			try {
+				// Make a GET request using axios
+				const response = await axios.get(
+					`https://api.themoviedb.org/3/movie/${tmdb_id}/videos?language=en-US`,
+					{
+						headers: {
+							Authorization: `Bearer ${tmdbAuthorization}`,
+							accept: "application/json",
+						},
+					}
+				);
+				setYoutubeKey(response.data.results[0].key);
+			} catch (error) {
+				setPageError(error);
+			} finally {
+				setLoading(false);
+			}
+		};
+
 		if (error) {
 			setPageLoading(false);
 			setPageError(error.message);
 		}
 		if (data?.getMovie?.movie) {
 			setCurrentMovie(data.getMovie.movie);
+			if (data.getMovie.movie.youtube_link) {
+				setYoutubeKey(data.getMovie.movie.youtube_link);
+				setLoading(false);
+			} else if (data.getMovie.movie.tmdb_id) {
+				fetchData(data.getMovie.movie.tmdb_id);
+				setLoading(false);
+			}
 			setPageLoading(false);
 		}
-	}, [data, error, navigate]);
+	}, [currentMovie.tmdb_id, data, error, navigate]);
 
 	if (pageLoading) {
 		return (
 			<div>
+				<Skeleton />
+				<Skeleton />
+				<Skeleton />
 				<Skeleton />
 			</div>
 		);
@@ -109,7 +144,6 @@ export default function MovieDetails() {
 	if (pageError) {
 		return <Error error={pageError} />;
 	}
-	// console.log(currentMovie);
 	return (
 		<div className="max-w-xl ml-3 md:mx-auto">
 			<Link
@@ -122,15 +156,20 @@ export default function MovieDetails() {
 				<h2 className="heading-text">
 					{currentMovie.title || "No Title"}
 				</h2>
-				<div className="w-[100px] bg-red-500">
+				<div
+					className={`w-[350px] h-[350px]  sm:w-[500px] md:w-[640px] bg-gray-50 ${
+						loading ? "animate-pulse" : "animate-none"
+					}`}
+				>
 					<iframe
 						src={
-							currentMovie?.trailer ||
-							"https://www.youtube.com/embed/lV1OOlGwExM"
+							youtubeKey
+								? `https://www.youtube.com/embed/${youtubeKey}`
+								: "https://www.youtube.com/embed/lV1OOlGwExM"
 						}
 						frameBorder="0"
 						allowFullScreen
-						className="w-[350px] h-[350px]  sm:w-[500px] md:w-[640px]"
+						className="w-full h-full animate-none"
 					></iframe>
 				</div>
 				<div>

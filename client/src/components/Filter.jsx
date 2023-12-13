@@ -87,7 +87,10 @@ function Filter() {
 
 	return (
 		<>
-			<div className="sticky top-0 left-0 right-0 z-50 bg-white max-w-7xl shadow-lg rounded-md p-5 xl:mx-auto my-7">
+			<div
+				className="max-w-7xl shadow-lg rounded-md p-5 xl:mx-auto my-7"
+				id="top"
+			>
 				<h1 className="mb-2 text-2xl font-bold text-emerald-600 font-poppings tracking-wider">
 					Filters
 				</h1>
@@ -97,7 +100,7 @@ function Filter() {
 						<div className="relative">
 							<input
 								placeholder="Search Filter"
-								className="border  shadow-lg rounded-md py-3 px-2 w-[280px] focus:w-[300px] outline-none pr-8 text-emerald-900"
+								className="border  shadow-lg rounded-md py-3 px-2 w-full focus:w-[300px] outline-none pr-8 text-emerald-900"
 								value={filterOption.title}
 								onChange={(e) => {
 									handleStateChange("title", e.target.value);

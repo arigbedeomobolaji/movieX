@@ -36,7 +36,6 @@ export class MovieAPI extends DataSource {
 		const cursorOptions = after
 			? { where: { id: { [Op.gt]: after } } }
 			: {};
-		console.log(after);
 		const movies = await Movie.findAll({
 			order: [["id", "ASC"]],
 			limit: first,

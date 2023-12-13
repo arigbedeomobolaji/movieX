@@ -30,13 +30,12 @@ const style = {
 	top: "50%",
 	left: "50%",
 	transform: "translate(-50%, -50%)",
-	maxWidth: 700,
 	bgcolor: "background.paper",
 	border: "2px solid #000",
 	boxShadow: 24,
 	overflow: "scroll",
-	height: "80vh",
-	p: 4,
+	height: "90vh",
+	padding: 2,
 };
 
 export default function BasicModal({
@@ -77,6 +76,7 @@ export default function BasicModal({
 		variables: {
 			data: {
 				...newMovie,
+				vote_average: newMovie.vote_average * 2,
 			},
 		},
 		optimisticResponse: {
@@ -111,7 +111,10 @@ export default function BasicModal({
 	const [updateMovie] = useMutation(UPDATE_MOVIE, {
 		variables: {
 			updateMovieId: Number(movieId),
-			updateData: newMovie,
+			updateData: {
+				...newMovie,
+				vote_average: newMovie.vote_average * 2,
+			},
 		},
 		optimisticResponse: {
 			updateMovie: {
@@ -134,8 +137,6 @@ export default function BasicModal({
 				cache.writeQuery({ query: GET_MOVIES, data });
 				setNewMovie(memoizedNewMovieInitialState);
 				moviesVar(movies);
-
-				console.log({ movies, updateMovie });
 			}
 		},
 		onError: (error) => alert(error.message),
@@ -174,7 +175,10 @@ export default function BasicModal({
 				aria-labelledby="modal-modal-title"
 				aria-describedby="modal-modal-description"
 			>
-				<Box sx={style} className="flex flex-col gap-3 font-poppings">
+				<Box
+					sx={style}
+					className="flex flex-col gap-3 font-poppings w-10/12 md:max-w-[1000px]"
+				>
 					<div className="flex items-center justify-between">
 						<h1 className="text-emerald-700 font-bold text-xl">
 							Add New Movie
@@ -320,7 +324,7 @@ export default function BasicModal({
 										onChange={(event) =>
 											handleStateChange(
 												"vote_average",
-												eval(event.target.value) * 2
+												eval(event.target.value)
 											)
 										}
 										className="h-12 w-full flex outline-none"

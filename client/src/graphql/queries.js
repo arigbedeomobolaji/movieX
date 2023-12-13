@@ -11,6 +11,8 @@ export const GET_MOVIES = gql`
 				adult
 				backdrop_path
 				id
+				tmdb_id
+				youtube_link
 				original_language
 				original_title
 				overview
@@ -56,6 +58,7 @@ export const GET_MOVIE = gql`
 				adult
 				backdrop_path
 				tmdb_id
+				youtube_link
 				original_language
 				original_title
 				overview

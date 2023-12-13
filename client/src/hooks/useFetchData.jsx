@@ -5,7 +5,6 @@ import { useQuery } from "@apollo/client";
 export default function useFetchData({ observerTarget }) {
 	const [pageNumber, setPageNumber] = useState(1);
 	setPageNumber(pageNumber + 1);
-	console.log(pageNumber);
 	const { data, loading, error } = useQuery(GET_PAGINATED_MOVIES, {
 		variables: {
 			pageNumber: pageNumber,
