@@ -3,10 +3,12 @@ import mysql from "mysql2/promise";
 import dotenv from "dotenv";
 dotenv.config();
 
-const database = process.env.database;
+const database = process.env.DATABASE;
 const username = process.env.MYSQL_USERNAME;
 const password = process.env.MYSQL_PASSWORD;
 const host = process.env.MYSQL_HOST;
+
+console.log({ database });
 
 async function initialize() {
 	try {
