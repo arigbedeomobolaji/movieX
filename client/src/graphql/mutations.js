@@ -1,18 +1,18 @@
 import { gql } from "@apollo/client";
 
 export const CREATE_MOVIE = gql`
-	mutation CreateMovie($data: MovieInput) {
+	mutation CreateMovie($data: MovieInput!) {
 		createMovie(data: $data) {
-			code
-			success
-			message
 			movie {
-				title
 				id
-				description
-				posterUrl
-				rating
+				overview
+				poster_path
+				title
+				vote_average
 			}
+			message
+			success
+			code
 		}
 	}
 `;
@@ -32,18 +32,29 @@ export const CREATE_REVIEW = gql`
 `;
 
 export const UPDATE_MOVIE = gql`
-	mutation UpdateMovie($updateMovieId: Int, $updateData: MovieUpdateInput) {
+	mutation UpdateMovie($updateMovieId: Int, $updateData: MovieInput) {
 		updateMovie(id: $updateMovieId, updateData: $updateData) {
+			movie {
+				id
+				adult
+				backdrop_path
+				tmdb_id
+				youtube_link
+				original_language
+				original_title
+				overview
+				popularity
+				poster_path
+				release_date
+				title
+				video
+				vote_average
+				vote_count
+				genre_ids
+			}
 			code
 			success
 			message
-			movie {
-				id
-				title
-				description
-				posterUrl
-				rating
-			}
 		}
 	}
 `;
@@ -57,10 +68,26 @@ export const DELETE_MOVIE = gql`
 			movie {
 				id
 				title
-				description
-				posterUrl
-				rating
 			}
 		}
 	}
 `;
+
+/* 
+
+id
+				adult
+				backdrop_path
+				tmdb_id
+				youtube_link
+				original_language
+				original_title
+				overview
+				popularity
+				poster_path
+				release_date
+				title
+				video
+				vote_average
+				vote_count
+*/

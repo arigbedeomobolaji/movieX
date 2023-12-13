@@ -97,7 +97,7 @@ export class MovieAPI extends DataSource {
 			"video",
 			"vote_average",
 			"vote_count",
-			"genre_ids",
+			"youtube_link",
 		];
 		const updates = validOperation(allowedField, updateData);
 		const id = Number(movieId);
@@ -113,7 +113,7 @@ export class MovieAPI extends DataSource {
 
 	async deleteMovie(movieId) {
 		const movie = await Movie.findByPk(movieId);
-		if (!movie) this.errorFormat("Movie not in Database", 404);
+		if (!movie) errorFormat("Movie not in Database", 404);
 		return await movie.destroy();
 	}
 }

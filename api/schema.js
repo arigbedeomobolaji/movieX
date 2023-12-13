@@ -29,11 +29,11 @@ export const typeDefs = gql`
 	# Mutation type defines entry points for write Operations => POST, PATCH,PUT,DELETE (create,update&delete)
 	type Mutation {
 		"Create a new movie in our database"
-		createMovie(data: MovieInput): MovieResponse
+		createMovie(data: MovieInput!): MovieResponse
 		"Delete a movie from our database"
 		deleteMovie(id: ID!): MovieResponse
 		"Update a movie in our database"
-		updateMovie(id: Int, updateData: MovieUpdateInput): MovieResponse
+		updateMovie(id: Int, updateData: MovieInput): MovieResponse
 		"Create a new User"
 		createUser(data: UserInput): UserTokenResponse
 		"Update the user Data"
@@ -120,13 +120,6 @@ export const typeDefs = gql`
 		users: [User]
 	}
 
-	input MovieInput {
-		title: String!
-		description: String!
-		posterUrl: String!
-		rating: Int!
-	}
-
 	input UserInput {
 		username: String!
 		email: String!
@@ -147,20 +140,20 @@ export const typeDefs = gql`
 		isAdmin: Boolean
 	}
 
-	input MovieUpdateInput {
+	input MovieInput {
 		adult: Boolean
 		backdrop_path: String
 		original_language: String
 		original_title: String
+		youtube_link: String
 		overview: String
 		popularity: Float
 		poster_path: String
 		release_date: String
 		title: String
-		video: String
+		video: Boolean
 		vote_average: Float
 		vote_count: Int
-		genre_ids: JSON
 	}
 
 	# The dat we want the movie object to return to our users.
@@ -169,6 +162,7 @@ export const typeDefs = gql`
 		adult: Boolean
 		backdrop_path: String
 		tmdb_id: Int
+		youtube_link: String
 		original_language: String
 		original_title: String
 		overview: String

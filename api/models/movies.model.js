@@ -21,6 +21,10 @@ Movie.init(
 		},
 		adult: DataTypes.BOOLEAN,
 		genre_ids: DataTypes.JSON,
+		youtube_link: {
+			type: DataTypes.STRING(2000),
+			allowNull: true,
+		},
 		backdrop_path: DataTypes.STRING(2000),
 		tmdb_id: DataTypes.INTEGER,
 		original_language: DataTypes.STRING(10),

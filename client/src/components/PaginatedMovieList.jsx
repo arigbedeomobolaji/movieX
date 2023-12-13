@@ -4,24 +4,23 @@ import { useQuery } from "@apollo/client";
 import MovieCard from "./MovieCard";
 import { CURSORED_MOVIES } from "../graphql/queries";
 import { useEffect, useRef, useState } from "react";
-import SkeletonComponent from "./Skeleton";
 import { Alert } from "@mui/material";
 import Error from "./Error";
+import Loading from "./Loading";
 function PaginatedMovieList() {
 	const [movies, setMovies] = useState([]);
 	const [cursor, setCursor] = useState(null);
 	const [hasNextPage, setHasNextPage] = useState(true);
 
 	const { data, loading, error, fetchMore } = useQuery(CURSORED_MOVIES, {
-		variables: { first: 10, after: cursor },
+		variables: { first: 15, after: cursor },
 	});
+
 	const observerTarget = useRef(null);
-	console.log({ data, movies, cursor, hasNextPage });
 
 	useEffect(() => {
 		const observer = new IntersectionObserver(
 			(entries) => {
-				console.log(entries[0].isIntersecting);
 				if (entries[0].isIntersecting && hasNextPage) {
 					fetchMore({
 						variables: {
@@ -61,17 +60,6 @@ function PaginatedMovieList() {
 		};
 	}, [data, fetchMore, movies]);
 
-	if (loading) {
-		return (
-			<div className="max-w-7xl mx-3 my-5 lg:mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-items-start md:justify-items-center">
-				<SkeletonComponent />
-				<SkeletonComponent />
-				<SkeletonComponent />
-				<SkeletonComponent />
-			</div>
-		);
-	}
-
 	if (error) {
 		return <Error error={error} />;
 	}
@@ -90,6 +78,8 @@ function PaginatedMovieList() {
 			)}
 			<div className="mb-5"></div>
 			<div ref={observerTarget}></div>
+
+			{loading && <Loading numberOfComponent={5} />}
 		</div>
 	);
 }

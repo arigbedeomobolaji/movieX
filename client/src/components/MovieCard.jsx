@@ -10,19 +10,19 @@ import { Button, CardActionArea, Divider, Rating } from "@mui/material";
 import { DELETE_MOVIE } from "../graphql/mutations";
 import { useMutation, useReactiveVar } from "@apollo/client";
 import { GET_MOVIES } from "../graphql/queries";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import BasicModal from "./Modal";
 import { useNavigate } from "react-router-dom";
-import { userVar } from "../graphql/cache";
+import { moviesVar, userVar } from "../graphql/cache";
 
 const tmdbImageBaseUrl = import.meta.env.VITE_TMDB_IMAGE_BASE_URL;
 
 export default function MovieCard({
 	id,
-	title,
+	backdrop_path,
 	overview,
 	poster_path,
-	backdrop_path,
+	title,
 	vote_average,
 }) {
 	const navigate = useNavigate();
@@ -37,22 +37,39 @@ export default function MovieCard({
 		},
 		update(cache) {
 			const data = { ...cache.readQuery({ query: GET_MOVIES }) };
-			let { movies } = data.movies;
+			let { movies } = data.getMovies;
 			const movieIndex = movies.findIndex((movie) => id === movie.id);
 
 			movies.splice(movieIndex, 1);
-			data.movies.movies = movies;
+			data.getMovies.movies = movies;
 			cache.writeQuery({ query: GET_MOVIES, data });
 		},
 		onError: (error) => alert(error.message),
 		refetchQueries: [GET_MOVIES],
 	});
-	const movieData = { title, overview, poster_path, vote_average };
+	const [movieData, setMovieData] = useState(null);
+
 	const [open, setOpen] = useState(false);
 	const handleOpen = () => setOpen(true);
-	const handleClose = () => setOpen(false);
+	const handleClose = () => {
+		setOpen(false);
+		setMovieData(null);
+	};
 	const [performAction, setPerformAction] = useState(false);
+	const movies = useReactiveVar(moviesVar);
 	const user = useReactiveVar(userVar);
+
+	function handleEdit() {
+		const movieData2 = movies.find((movie) => movie.id == id);
+		delete movieData2.release_date;
+		setMovieData(movieData2);
+	}
+
+	useEffect(() => {
+		if (movieData) {
+			handleOpen();
+		}
+	}, [movieData]);
 
 	return (
 		// <Link to={`/movies/${id}`} className="no-underline">
@@ -106,6 +123,7 @@ export default function MovieCard({
 									}
 								/>
 							)}
+
 							{performAction && user?.isAdmin && (
 								<div className="flex flex-col items-end justify-center absolute bottom-14 right-10   bg-gray-100 rounded-md text-white  pt-5 shadow-lg sapce-y-3">
 									<Button
@@ -117,7 +135,7 @@ export default function MovieCard({
 									</Button>
 									<Divider />
 									<Button
-										onClick={handleOpen}
+										onClick={handleEdit}
 										className=" text-gray-800 font-light font-poppings m-0 w-full pl-4"
 									>
 										<EditIcon className="" /> Edit
@@ -139,14 +157,16 @@ export default function MovieCard({
 				</div>
 			</CardContent>
 
-			<BasicModal
-				{...movieData}
-				action="Update Movie"
-				handleOpen={handleOpen}
-				open={open}
-				movieId={id}
-				handleClose={handleClose}
-			/>
+			{movieData && (
+				<BasicModal
+					{...movieData}
+					action="Update Movie"
+					handleOpen={handleOpen}
+					open={open}
+					movieId={id}
+					handleClose={handleClose}
+				/>
+			)}
 		</Card>
 		// </Link>
 	);

@@ -87,7 +87,7 @@ function Filter() {
 
 	return (
 		<>
-			<div className="max-w-7xl mx-5 xl:mx-auto my-7">
+			<div className="sticky top-0 left-0 right-0 z-50 bg-white max-w-7xl shadow-lg rounded-md p-5 xl:mx-auto my-7">
 				<h1 className="mb-2 text-2xl font-bold text-emerald-600 font-poppings tracking-wider">
 					Filters
 				</h1>
