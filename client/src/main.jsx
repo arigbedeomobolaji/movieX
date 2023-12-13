@@ -8,13 +8,15 @@ import {
 	concat,
 	createHttpLink,
 } from "@apollo/client";
-import { setContext } from "@apollo/client/link/context";
 import App from "./App.jsx";
 import { cache } from "./graphql/cache.js";
 import "./index.css";
 
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
+console.log(baseUrl);
+
 const httpLink = createHttpLink({
-	uri: "http://localhost:3003/graphql",
+	uri: `${baseUrl}/graphql`,
 });
 
 const authMiddleware = new ApolloLink((operation, forward) => {

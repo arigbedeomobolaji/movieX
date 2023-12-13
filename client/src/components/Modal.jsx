@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/prop-types */
+import CssBaseline from "@mui/material/CssBaseline";
 import {
 	Button,
 	FormControl,

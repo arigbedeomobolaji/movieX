@@ -106,6 +106,13 @@ function Navbar() {
 									Login
 								</Button>
 							)}
+
+							<AnchorLink
+								className="text-white font-poppings no-underline"
+								href="#top"
+							>
+								Top
+							</AnchorLink>
 							<RxHamburgerMenu
 								onClick={() => setIsOpen(!isOpen)}
 								className="text-[40px] text-emerald-600 cursor-pointer"
@@ -113,12 +120,6 @@ function Navbar() {
 						</div>
 					</div>
 				</div>
-				<AnchorLink
-					className="max-w-7xl mx-auto ml-20 text-white font-poppings p-4 text-2xl no-underline"
-					href="#top"
-				>
-					Top
-				</AnchorLink>
 			</div>
 		</div>
 	);
