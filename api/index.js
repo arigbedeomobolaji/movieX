@@ -65,15 +65,12 @@ await server.start();
   // parse application/json
   app.use(bodyParser.json());
 
-  app.use(cors());
-// server.applyMiddleware({ app });
-app.use("/graphql",
-cors({
+  app.use(cors({
 	origin: process.env.FRONT_END_URL,
 	credentials: true
-}),
-	expressMiddleware(server),
-  );
+}));
+
+server.applyMiddleware({ app, path: "/graphql" });
 
 app.get("/", async (req, res) => {
 	try {
