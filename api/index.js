@@ -28,7 +28,7 @@ const schema = makeExecutableSchema({ typeDefs, resolvers });
 const port = process.env.PORT;
 const app = express();
 app.use(cors({
-	origin: ["https://omobolaji-moviex.vercel.app/", "http://localhost:3003"]
+	origin: ["https://omobolaji-moviex.vercel.app", "http://localhost:3003"]
 }));
 
 // setup Apollo Server
