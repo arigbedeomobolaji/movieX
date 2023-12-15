@@ -59,7 +59,7 @@ const server = new ApolloServer({
 await server.start();
 
 // server.applyMiddleware({ app });
-app.use(
+app.use("/graphql",
 	cors(),
 	bodyParser.json(),
 	expressMiddleware(server),
