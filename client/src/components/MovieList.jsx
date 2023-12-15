@@ -43,7 +43,7 @@ function MovieList() {
 		return <Error error={error} />;
 	}
 	return (
-		<div className="flex flex-col pb-5 mb-10">
+		<div className="flex flex-col pb-5 mb-10 mt-4">
 			{moviesData?.length ? (
 				<div className="max-w-7xl mx-3 my-5 lg:mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-items-start md:justify-items-center">
 					{moviesData.map((movie, index) => (

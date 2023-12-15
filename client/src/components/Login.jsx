@@ -46,7 +46,7 @@ const Login = ({ setIsLogin }) => {
 		<>
 			{error && <Error error={error} />}
 			<Form
-				className="mzw-w-[350px] mx-auto bg-gray-50 flex flex-col rounded-md shadow-md justify-center mt-10 p-5 font-poppings"
+				className="mzw-w-[350px] mx-auto bg-gray-50 flex flex-col rounded-md shadow-md justify-center mt-32 p-5 font-poppings"
 				name="basic"
 				labelCol={{
 					span: 8,

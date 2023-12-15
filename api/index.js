@@ -1,26 +1,38 @@
 import express from "express";
+import http from 'http';
+import cors from 'cors';
+import bodyParser from 'body-parser';
 import dotenv from "dotenv";
 import morgan from "morgan";
-import cors from "cors";
-import createError from "http-errors";
 import { makeExecutableSchema } from "@graphql-tools/schema";
-import { ApolloServer } from "apollo-server-express";
 import { InMemoryLRUCache } from "@apollo/utils.keyvaluecache";
 import { typeDefs } from "./schema.js";
 import resolvers from "./resolvers.js";
-import "./utils/mysql.js";
 import { MovieAPI } from "./datasource/MovieDatasource.js";
 import { UserAPI } from "./datasource/UserDatasource.js";
 import { authenticateUser } from "./middlewares/authenticateUser.js";
 import { ReviewAPI } from "./datasource/ReviewDatasource.js";
 import { TmdbAPI } from "./datasource/RESTMovieDatasource.js";
+import { ApolloServer } from '@apollo/server';
+import { expressMiddleware } from '@apollo/server/express4';
+import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer'
+import "./utils/mysql.js";
+
 dotenv.config();
 
 const schema = makeExecutableSchema({ typeDefs, resolvers });
 
+// express specific
+const port = process.env.PORT;
+const app = express();
+const httpServer = http.createServer(app);
+app.use(express.json());
+
+// setup Apollo Server
 const server = new ApolloServer({
 	schema,
 	introspection: true,
+	plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
 	context: async ({ req }) => {
 		// Extract the token from the Authorization header
 		const authorizationStr = req.headers.authorization || "";
@@ -44,30 +56,14 @@ const server = new ApolloServer({
 		ttl: 300,
 	}),
 });
-
 await server.start();
 
-// express specific
-const port = process.env.PORT;
-const app = express();
-app.use(express.json());
-app.use(cors());
-app.use((req, res, next) => {
-	res.setHeader("Access-Control-Allow-Origin", "*");
-	res.setHeader(
-		"Access-Control-Allow-Methods",
-		"OPTIONS, GET, POST, PUT, PATCH, DELETE"
-	);
-	res.setHeader(
-		"Access-Control-Allow-Headers",
-		"Content-Type, Authorization"
-	);
-	if (req.method === "OPTIONS") {
-		return res.sendStatus(200);
-	}
-	next();
-});
-server.applyMiddleware({ app });
+// server.applyMiddleware({ app });
+app.use(
+	cors(),
+	bodyParser.json(),
+	expressMiddleware(server),
+  );
 
 app.get("/", async (req, res) => {
 	try {
@@ -78,36 +74,14 @@ app.get("/", async (req, res) => {
 		res.status(500).send({ error });
 	}
 });
-// morgan
-morgan(function (tokens, req, res) {
-	return [
-		tokens.method(req, res),
-		tokens.url(req, res),
-		tokens.status(req, res),
-		tokens.res(req, res, "content-length"),
-		"-",
-		tokens["response-time"](req, res),
-		"ms",
-	].join(" ");
-});
 
-// Logs out error
-app.use(function (req, res, next) {
-	if (!req.user)
-		return next(createError(401, "Please login to view this page."));
-	next();
-});
+// morgan
+morgan("tiny");
 
 //  Function that start up the server
-function start(port) {
-	try {
-		app.listen(port, (err) => {
-			if (err) throw err;
-			console.log("✔✔✔Server is running on port", port);
-		});
-	} catch (error) {
-		console.log("❌❌❌Error: Connection not made to the server", error);
-	}
+async function start(port) {
+	await new Promise((resolve) => httpServer.listen({ port }, resolve));
+console.log(`🚀 Server ready at http://localhost:${port}`);
 }
 
 start(port);

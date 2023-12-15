@@ -88,7 +88,7 @@ function Filter() {
 	return (
 		<>
 			<div
-				className="max-w-7xl shadow-lg rounded-md p-5 xl:mx-auto my-7"
+				className="max-w-7xl shadow-lg rounded-md px-5 py-2 xl:mx-auto mb-4 mt-32"
 				id="top"
 			>
 				<h1 className="mb-2 text-2xl font-bold text-emerald-600 font-poppings tracking-wider">
@@ -96,21 +96,21 @@ function Filter() {
 				</h1>
 				<div className="flex gap-3 flex-col md:flex-row md:items-center md:justify-between">
 					{/* Filter title and rate */}
-					<div className="flex flex-wrap justify-start items-center gap-3">
-						<div className="relative">
+					<div className="flex gap-3 flex-col md:flex-row md:items-center md:justify-start flex-1">
+						<div className="relative min-w-[250px]  w-2/4 sm:2/4 md:1/4 mr-10">
 							<input
 								placeholder="Search Filter"
-								className="border  shadow-lg rounded-md py-3 px-2 w-full focus:w-[300px] outline-none pr-8 text-emerald-900"
+								className="border  shadow-lg rounded-md py-3 w-full px-2outline-none pr-8 text-emerald-900"
 								value={filterOption.title}
 								onChange={(e) => {
 									handleStateChange("title", e.target.value);
 								}}
 							/>
-							<SearchIcon className="text-emerald-600 absolute top-[10px] right-2" />
+							<SearchIcon className="text-emerald-600 absolute top-[10px] -right-8" />
 						</div>
-						<div>
+						<div className="inline-flex bg-transparent">
 							<FormControl
-								fullWidth
+								
 								className="shadow-lg rounded-2xl flex"
 							>
 								<InputLabel

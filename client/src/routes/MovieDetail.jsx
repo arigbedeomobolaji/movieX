@@ -145,7 +145,7 @@ export default function MovieDetails() {
 		return <Error error={pageError} />;
 	}
 	return (
-		<div className="max-w-xl ml-3 md:mx-auto">
+		<div className="max-w-xl ml-3 md:mx-auto mt-32">
 			<Link
 				to="/"
 				className="flex gap-2 items-center text-blue-500 font-poppings text-md p-3 pt-5"

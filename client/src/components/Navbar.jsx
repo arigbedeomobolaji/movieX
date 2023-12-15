@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable react-hooks/rules-of-hooks */
 import { useMutation, useQuery, useReactiveVar } from "@apollo/client";
 import { Button } from "@mui/material";
@@ -6,17 +7,20 @@ import AnchorLink from "react-anchor-link-smooth-scroll";
 import { userVar } from "../graphql/cache";
 import { LOGOUT, LOGOUT_ALL } from "../graphql/user.mutation";
 import { CURRENT_USER } from "../graphql/user.queries";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { RxHamburgerMenu } from "react-icons/rx";
 
-function Navbar() {
+function Navbar({isOpen, setIsOpen}) {
 	const navigate = useNavigate();
 	const user = useReactiveVar(userVar);
-	const [isOpen, setIsOpen] = useState(false);
 	const token = JSON.parse(localStorage.getItem("token"));
 	const { data } = useQuery(CURRENT_USER, {
 		fetchPolicy: "network-only",
 	});
+
+	useEffect(() => {
+		console.log("Navbar rendered.")
+	}, [])
 
 	useEffect(() => {
 		if (data?.currentUser?.user) {
