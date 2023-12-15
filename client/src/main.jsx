@@ -16,7 +16,10 @@ let baseUrl = import.meta.env.VITE_API_BASE_URL;
 console.log(baseUrl);
 const httpLink = createHttpLink({
 	uri: `${baseUrl}/graphql`,
-	credentials: "include"
+	credentials: "include",
+	fetchOptions: {
+        mode: 'no-cors'
+    }
 });
 
 const authMiddleware = new ApolloLink((operation, forward) => {

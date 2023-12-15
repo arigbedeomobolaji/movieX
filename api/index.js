@@ -67,7 +67,7 @@ await server.start();
 		origin: frontEndUrl,
 		credentials: true, // Enable credentials (if needed)
 	  }),
-	bodyParser.json(),
+	  express.json(),
 	expressMiddleware(server),
   );
 
