@@ -68,6 +68,10 @@ await server.start();
   app.use(cors());
 // server.applyMiddleware({ app });
 app.use("/graphql",
+cors({
+	origin: process.env.FRONT_END_URL,
+	credentials: true
+}),
 	expressMiddleware(server),
   );
 
