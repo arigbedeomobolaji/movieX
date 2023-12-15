@@ -20,6 +20,9 @@ import "./utils/mysql.js";
 
 dotenv.config();
 
+const frontEndUrl = process.env.FRONT_END_URL;
+console.log({frontEndUrl})
+
 const schema = makeExecutableSchema({ typeDefs, resolvers });
 
 // express specific
@@ -59,20 +62,16 @@ const server = new ApolloServer({
 await server.start();
 
 
-  // parse application/x-www-form-urlencoded
-  app.use(bodyParser.urlencoded({ extended: false }));
-
-  // parse application/json
-  app.use(bodyParser.json());
-
-  app.use(cors({
-	origin: process.env.FRONT_END_URL,
-	credentials: true
-}));
-
-app.use("/graphql",
+  app.use("/graphql",
+	cors({
+		origin: frontEndUrl,
+		credentials: true, // Enable credentials (if needed)
+	  }),
+	bodyParser.json(),
 	expressMiddleware(server),
   );
+
+
 
 app.get("/", async (req, res) => {
 	try {
@@ -90,7 +89,7 @@ morgan("tiny");
 //  Function that start up the server
 async function start(port) {
 	await new Promise((resolve) => httpServer.listen({ port }, resolve));
-console.log(`🚀 Server ready at http://localhost:${port}`);
+console.log(`🚀 Server ready at port ${port}`);
 }
 
 start(port);
