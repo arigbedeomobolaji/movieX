@@ -14,12 +14,15 @@ import "./index.css";
 
 let baseUrl = import.meta.env.VITE_API_BASE_URL;
 console.log(baseUrl);
+baseUrl = "http://localhost:3003/graphql"
 const httpLink = createHttpLink({
 	uri: `${baseUrl}/graphql`,
-	credentials: "include",
-	fetchOptions: {
-        mode: 'no-cors'
-    }
+	headers: {
+		'Content-Type': 'application/json',
+		'Access-Control-Allow-Origin': '*',
+		'Access-Control-Allow-Credentials': true,
+	  },
+	  fetch,
 });
 
 const authMiddleware = new ApolloLink((operation, forward) => {

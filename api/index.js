@@ -1,11 +1,13 @@
 import express from "express";
 import http from 'http';
 import cors from 'cors';
-import bodyParser from 'body-parser';
 import dotenv from "dotenv";
 import morgan from "morgan";
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import { InMemoryLRUCache } from "@apollo/utils.keyvaluecache";
+import { ApolloServer } from "apollo-server-express";
+import { expressMiddleware } from '@apollo/server/express4';
+import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer'
 import { typeDefs } from "./schema.js";
 import resolvers from "./resolvers.js";
 import { MovieAPI } from "./datasource/MovieDatasource.js";
@@ -13,9 +15,6 @@ import { UserAPI } from "./datasource/UserDatasource.js";
 import { authenticateUser } from "./middlewares/authenticateUser.js";
 import { ReviewAPI } from "./datasource/ReviewDatasource.js";
 import { TmdbAPI } from "./datasource/RESTMovieDatasource.js";
-import { ApolloServer } from '@apollo/server';
-import { expressMiddleware } from '@apollo/server/express4';
-import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer'
 import "./utils/mysql.js";
 
 dotenv.config();
@@ -28,14 +27,11 @@ const schema = makeExecutableSchema({ typeDefs, resolvers });
 // express specific
 const port = process.env.PORT;
 const app = express();
-const httpServer = http.createServer(app);
-app.use(express.json());
 
 // setup Apollo Server
 const server = new ApolloServer({
 	schema,
 	introspection: true,
-	plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
 	context: async ({ req }) => {
 		// Extract the token from the Authorization header
 		const authorizationStr = req.headers.authorization || "";
@@ -62,17 +58,6 @@ const server = new ApolloServer({
 await server.start();
 
 
-  app.use("/graphql",
-	cors({
-		origin: frontEndUrl,
-		credentials: true, // Enable credentials (if needed)
-	  }),
-	  express.json(),
-	expressMiddleware(server),
-  );
-
-
-
 app.get("/", async (req, res) => {
 	try {
 		res.status(200).json({
@@ -83,13 +68,19 @@ app.get("/", async (req, res) => {
 	}
 });
 
+server.applyMiddleware({ app, path: '/graphql' });
 // morgan
 morgan("tiny");
 
 //  Function that start up the server
 async function start(port) {
-	await new Promise((resolve) => httpServer.listen({ port }, resolve));
-console.log(`🚀 Server ready at port ${port}`);
+	app.listen(port, (error) => {
+		if (error) {
+		  console.error('Server startup error:', error);
+		  process.exit(1);
+		}
+		console.log(`Server running at http://localhost:${port}/graphql`);
+	  });
 }
 
 start(port);
