@@ -18,11 +18,11 @@ baseUrl = "http://localhost:3003/graphql"
 const httpLink = createHttpLink({
 	uri: `${baseUrl}/graphql`,
 	headers: {
-		'Content-Type': 'application/json',
-		'Access-Control-Allow-Origin': '*',
-		'Access-Control-Allow-Credentials': true,
-	  },
-	  fetch,
+		"Content-Type": 'application/json',
+		"Access-Control-Allow-Origin": '*',
+		"Access-Control-Allow-Credentials": true,
+	},
+	fetch,
 });
 
 const authMiddleware = new ApolloLink((operation, forward) => {
