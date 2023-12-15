@@ -70,7 +70,9 @@ await server.start();
 	credentials: true
 }));
 
-server.applyMiddleware({ app, path: "/graphql" });
+app.use("/graphql",
+	expressMiddleware(server),
+  );
 
 app.get("/", async (req, res) => {
 	try {
