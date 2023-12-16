@@ -24,7 +24,6 @@ export default function MovieCard({
 	poster_path,
 	title,
 	vote_average,
-	youtube_link
 }) {
 	const navigate = useNavigate();
 	const [deleteMovie] = useMutation(DELETE_MOVIE, {
@@ -95,14 +94,14 @@ export default function MovieCard({
 			<CardActionArea className="mb-0 relative h-[275px]">
 				<div className="w-full h-[350px] blur-sm opacity-90">
 					<img
-						src={!youtube_link ? `${tmdbImageBaseUrl}/${backdrop_path}` : youtube_link ? `${backdrop_path}` : "https://images.unsplash.com/photo-1633783714421-332b7f929148?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8Tm8lMjBpbWFnZXxlbnwwfHwwfHx8MA%3D%3D"}
+						src={backdrop_path?.includes("http") ? `${backdrop_path}` : backdrop_path ? `${tmdbImageBaseUrl}/${backdrop_path}` : "https://images.unsplash.com/photo-1633783714421-332b7f929148?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8Tm8lMjBpbWFnZXxlbnwwfHwwfHx8MA%3D%3D"}
 						className="w-full h-full object-cover"
 					/>
 				</div>
 				<CardMedia
 					className="absolute top-0 h-[350px] object-contain z-10"
 					component="img"
-					image={!youtube_link ? `${tmdbImageBaseUrl}/${poster_path}` : youtube_link ? `${poster_path}`: "https://images.unsplash.com/photo-1633783714421-332b7f929148?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8Tm8lMjBpbWFnZXxlbnwwfHwwfHx8MA%3D%3D"}
+					image={poster_path?.includes("http") ? `${poster_path}` : poster_path ? `${tmdbImageBaseUrl}/${poster_path}`: "https://images.unsplash.com/photo-1633783714421-332b7f929148?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8Tm8lMjBpbWFnZXxlbnwwfHwwfHx8MA%3D%3D"}
 					alt={title + id}
 				/>
 			</CardActionArea>
