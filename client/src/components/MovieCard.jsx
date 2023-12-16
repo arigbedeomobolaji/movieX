@@ -87,6 +87,9 @@ export default function MovieCard({
 			handleOpen();
 		}
 	}, [movieData]);
+	if(poster_path?.includes('http') &&  backdrop_path?.includes('http')){
+		console.log(poster_path, backdrop_path)
+	}
 
 	return (
 		// <Link to={`/movies/${id}`} className="no-underline">
