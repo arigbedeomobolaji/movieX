@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/prop-types */
 import CssBaseline from "@mui/material/CssBaseline";
@@ -84,7 +85,23 @@ export default function BasicModal({
 			createMovie: {
 				__typename: "Movie",
 				id: "temp_id",
-				...newMovie,
+				title: newMovie.title || "Not Provided",
+				overview: newMovie.overview || "Not Provided",
+				poster_path: newMovie.poster_path || "http://www.wwww.ww",
+				vote_average: newMovie.vote_average || "http://www.wwww.ww",
+				vote_count: newMovie.vote_count || 50,
+				adult: newMovie.adult || "Not Provided",
+				backdrop_path: newMovie.backdrop_path || "Not Provided",
+				youtube_link: newMovie.youtube_link || "Not Provided",
+				original_language: newMovie.original_language || "Not Provided",
+				popularity: newMovie.popularity || "Not Provided",
+				release_date: newMovie.release_date || "Not Provided",
+				video: newMovie.video || "Not Provided",
+				original_title: newMovie.original_title || "Not Provided",
+				createdAt: Date.now(),
+				updatedAt: Date.now(),
+				tmdb_id: "temp-22",
+				genre_ids: ["temp1", "temp-2"]
 			},
 		},
 		update(cache, { data: { createMovie } }) {
@@ -128,14 +145,22 @@ export default function BasicModal({
 			if (!updateMovie.success) {
 				const data = { ...cache.readQuery({ query: GET_MOVIES }) };
 				let { movies } = data.getMovies;
-				const movieIndex = movies.findIndex((movie) => {
+				const newMovies = [...movies]
+				const movieIndex = newMovies.findIndex((movie) => {
 					return movieId === movie.id;
 				});
-
-				movies.splice(movieIndex, 1, updateMovie);
-				data.getMovies.movies = movies;
+				newMovies.splice(movieIndex, 1, updateMovie);
+				console.log({newMovies});
+				// data.getMovies.movies = newMovies;
 				handleClose();
-				cache.writeQuery({ query: GET_MOVIES, data });
+				cache.writeQuery({ 
+					query: GET_MOVIES, 
+					data: {
+						...data, 
+						getMovies:{
+							...data.getMovies,
+							movies: [...newMovies]
+				}} });
 				setNewMovie(memoizedNewMovieInitialState);
 				moviesVar(movies);
 			}

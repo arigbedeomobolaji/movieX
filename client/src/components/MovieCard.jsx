@@ -24,6 +24,7 @@ export default function MovieCard({
 	poster_path,
 	title,
 	vote_average,
+	youtube_link
 }) {
 	const navigate = useNavigate();
 	const [deleteMovie] = useMutation(DELETE_MOVIE, {
@@ -38,11 +39,21 @@ export default function MovieCard({
 		update(cache) {
 			const data = { ...cache.readQuery({ query: GET_MOVIES }) };
 			let { movies } = data.getMovies;
-			const movieIndex = movies.findIndex((movie) => id === movie.id);
-
-			movies.splice(movieIndex, 1);
-			data.getMovies.movies = movies;
-			cache.writeQuery({ query: GET_MOVIES, data });
+			const newMovies = [...movies];
+			const movieIndex = newMovies.findIndex((movie) => id === movie.id);
+			console.log({newMovies, movieIndex})
+			newMovies.splice(movieIndex, 1);
+			console.log({newMovies, movieIndex: typeof movieIndex})
+			// data.getMovies.movies = movies;
+			cache.writeQuery({ 
+				query: GET_MOVIES, 
+				data: {
+					...data, 
+					getMovies:
+					{
+				...data.getMovies,
+				movies: [...newMovies]
+			}} });
 		},
 		onError: (error) => alert(error.message),
 		refetchQueries: [GET_MOVIES],
@@ -61,8 +72,15 @@ export default function MovieCard({
 
 	function handleEdit() {
 		const movieData2 = movies.find((movie) => movie.id == id);
-		delete movieData2.release_date;
-		setMovieData(movieData2);
+		if(movieData2) {
+			const movie = Object.fromEntries(
+				Object.entries(movieData2)
+				.filter(([key]) => key !== "release_date")
+			);
+			console.log(movie)
+			setMovieData(movie);
+
+		}
 	}
 
 	useEffect(() => {
@@ -77,14 +95,14 @@ export default function MovieCard({
 			<CardActionArea className="mb-0 relative h-[275px]">
 				<div className="w-full h-[350px] blur-sm opacity-90">
 					<img
-						src={backdrop_path ? `${tmdbImageBaseUrl}/${backdrop_path}` : "https://images.unsplash.com/photo-1633783714421-332b7f929148?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8Tm8lMjBpbWFnZXxlbnwwfHwwfHx8MA%3D%3D"}
+						src={!youtube_link ? `${tmdbImageBaseUrl}/${backdrop_path}` : youtube_link ? `${backdrop_path}` : "https://images.unsplash.com/photo-1633783714421-332b7f929148?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8Tm8lMjBpbWFnZXxlbnwwfHwwfHx8MA%3D%3D"}
 						className="w-full h-full object-cover"
 					/>
 				</div>
 				<CardMedia
 					className="absolute top-0 h-[350px] object-contain z-10"
 					component="img"
-					image={poster_path ? `${tmdbImageBaseUrl}/${poster_path}` : "https://images.unsplash.com/photo-1633783714421-332b7f929148?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8Tm8lMjBpbWFnZXxlbnwwfHwwfHx8MA%3D%3D"}
+					image={!youtube_link ? `${tmdbImageBaseUrl}/${poster_path}` : youtube_link ? `${poster_path}`: "https://images.unsplash.com/photo-1633783714421-332b7f929148?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8Tm8lMjBpbWFnZXxlbnwwfHwwfHx8MA%3D%3D"}
 					alt={title + id}
 				/>
 			</CardActionArea>
