@@ -13,7 +13,7 @@ import { cache } from "./graphql/cache.js";
 import "./index.css";
 
 let baseUrl = import.meta.env.VITE_API_BASE_URL;
-baseUrl = "http://localhost:3003"
+// baseUrl = "http://localhost:3003"
 const httpLink = createHttpLink({
 	uri: `${baseUrl}/graphql`,
 	headers: {
