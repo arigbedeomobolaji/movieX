@@ -43,19 +43,29 @@ export default function MovieDetails() {
 
 	const [createReview] = useMutation(CREATE_REVIEW, {
 		update(cache, { data: { createReview } }) {
-			const movieData = {
+			const data = {
 				...cache.readQuery({
 					query: GET_MOVIE,
 					variables: { movieId: Number(movieId) },
 					fetchPolicy: "cache-only",
 				}),
 			};
-			let movieReviews = movieData?.getMovie?.movie?.movieReviews;
-			movieReviews = [...movieReviews, createReview];
-			movieData.getMovie.movie.movieReviews = [...movieReviews];
+			let movieReviews = [data?.getMovie?.movie?.movieReviews];
+			let newMovieReviews = [...movieReviews];
+			newMovieReviews = [...newMovieReviews, createReview];
+			// movieData.getMovie.movie.movieReviews = [...movieReviews];
 			cache.writeQuery({
 				query: GET_MOVIE,
-				movieData,
+				data: {
+					...data,
+					getMovie: {
+						...data.getMovie,
+						movie: {
+							...data.getMovie.movie,
+							movieReviews: newMovieReviews
+						}
+					}
+				},
 			});
 			setYourReview("");
 		},
@@ -83,10 +93,10 @@ export default function MovieDetails() {
 					__typename: "Review",
 					id: "temp-id",
 					review: yourReview,
-					reviewer: {
-						userId: Number(user.id),
-						username: user.username,
-					},
+					createdAt: Date.now(),
+					updatedAt: Date.now(),
+					movieId: Number(movieId),
+					
 				},
 			},
 		});

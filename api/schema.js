@@ -185,11 +185,17 @@ export const typeDefs = gql`
 		username: String!
 		email: String!
 		isAdmin: Boolean
-		reviewer: [Review]
+		reviewer: [MyReviews]
 	}
 
 	type Token {
 		token: JSON
+	}
+
+	type MyReviews {
+		id: Int
+		review: String
+		MovieId: Int
 	}
 
 	type Review {
